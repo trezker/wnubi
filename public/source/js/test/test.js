@@ -55,12 +55,6 @@ var TestSuite = function() {
 			});
 		});
 	};
-
-	self.create_event = function() {
-		google.maps.event.trigger(eventViewModel.map, 'click', {
-			latLng: new google.maps.LatLng(37, -122)
-		});
-	};
 };
 
 var runOnce = false;
