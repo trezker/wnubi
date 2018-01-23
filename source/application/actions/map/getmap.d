@@ -15,23 +15,120 @@ import boiler.testsuite;
 import boiler.HttpRequest;
 import boiler.HttpResponse;
 import application.Database;
+import application.perlin;
+
+struct Region {
+	string name;
+	double height;
+	Color4f color;
+};
+/*
+Region[int] [
+	[
+		{
+			name: "Water deep",
+			height: 0.3,
+			color: color3(0x0000aa)
+		},
+		{
+			name: "Water shallow",
+			height: 0.4,
+			color: color3(0x0000ff)
+		},
+		{
+			name: "Sand",
+			height: 0.45,
+			color: color3(0xe3ae0b)
+		},
+		{
+			name: "Grass",
+			height: 0.55,
+			color: color3(0x48cb48)
+		},
+		{
+			name: "Grass 2",
+			height: 0.6,
+			color: color3(0x26a626)
+		},
+		{
+			name: "Rock",
+			height: 0.7,
+			color: color3(0x746444)
+		},
+		{
+			name: "Rock 2",
+			height: 0.9,
+			color: color3(0x6a604b)
+		},
+		{
+			name: "Snow",
+			height: 1,
+			color: color3(0xffffff)
+		}
+	]
+];*/
+
+Region[] regions = [
+	{
+		name: "Water deep",
+		height: 0.3,
+		color: color3(0x0000aa)
+	},
+	{
+		name: "Water shallow",
+		height: 0.4,
+		color: color3(0x0000ff)
+	},
+	{
+		name: "Sand",
+		height: 0.45,
+		color: color3(0xe3ae0b)
+	},
+	{
+		name: "Grass",
+		height: 0.55,
+		color: color3(0x48cb48)
+	},
+	{
+		name: "Grass 2",
+		height: 0.6,
+		color: color3(0x26a626)
+	},
+	{
+		name: "Rock",
+		height: 0.7,
+		color: color3(0x746444)
+	},
+	{
+		name: "Rock 2",
+		height: 0.9,
+		color: color3(0x6a604b)
+	},
+	{
+		name: "Snow",
+		height: 1,
+		color: color3(0xffffff)
+	}
+];
 
 class GetMap: Action {
 	HttpResponse Perform(HttpRequest req) {
 		HttpResponse res = new HttpResponse;
 		try {
-			// width * height
-			auto image = new Image!(PixelFormat.RGB8)(100, 100);
-			auto vw = image.width;
-			auto vh = image.height;
+			double perlinScale = 1;
+			int octaves = 4;
+			double persistence = 0.5;
+			double lacunarity = 2;
 
-			// fill it in with a gradient
+			auto image = new Image!(PixelFormat.RGB8)(100, 100);
+			int vw = image.width;
+			int vh = image.height;
+
 			foreach(y; 0 .. image.height)
 			    foreach(x; 0 .. image.width)
 			        image[x, y] = Color4f(0, 0, 0);
 
-			auto r = 50;
-			//canvas.canvasContext.fillStyle = "#FFF";
+			double r = 50;
 			for (int y = 0; y < vh; y++) {
 				auto w = to!int(sqrt(to!float(r*r-(y-vh/2)*(y-vh/2))));
 				if(w > vw/2)
@@ -42,56 +139,46 @@ class GetMap: Action {
 						(y-vh/2)/r,
 						0
 					);
-					/*
-					var p = {
-						x: (x-vw/2)/r,
-						y: (y-vh/2)/r
-					}*/
 					p.z = sqrt(1-sqrt(p.x*p.x+p.y*p.y));
+					if(isNaN(p.z)) {
+						p.z = 0;
+					}
 
 					auto pr = Vector3d();
 					rotateAroundAxis(pr, p, Vector3d(0, 1, 0), 0);
-					/*
-					var pr = vec3.rotateY([], [p.x, p.y, p.z], [0, 0, 0], self.rotationy);
-					p.x = pr[0];
-					p.y = pr[1];
-					p.z = pr[2];
-					*/
-					//var layer = 0;
-					/*
-					for(layer = 0; layer<regions.length; layer++) 
+					int layer = 0;
+					
+					//for(layer = 0; layer<regions.length; layer++) 
 					{
-						var scale = self.settings.perlinScale;
-						var amplitude = 1;
-						var frequency = 1;
-						var c = 0;
-						for(o = 0; o < self.settings.octaves; o++) {
-							var perlinValue = PerlinNoise.noise(scale*p.x*frequency+layer*0.5, scale*p.y*frequency, scale*p.z*frequency)*2-1;
+						double scale = perlinScale;
+						double amplitude = 1;
+						double frequency = 1;
+						double c = 0;
+						for(int o = 0; o < octaves; o++) {
+							double perlinValue = PerlinNoise(scale*p.x*frequency+layer*0.5, scale*p.y*frequency, scale*p.z*frequency)*2-1;
 							c += perlinValue * amplitude;
 
-							amplitude *= self.settings.persistence;
-							frequency *= self.settings.lacunarity;
+							amplitude *= persistence;
+							frequency *= lacunarity;
 						}
 
 						c = (c+1)/2;
-						if(c<min)
-							min=c;
-						if(c>max)
-							max=c;
-						var color = "";
-
-						for(region = 0; region<regions[layer].length; region++) {
+						Color4f color = Color4f(255, 255, 255);
+/*
+						for(int region = 0; region<regions[layer].length; region++) {
 							if(c < regions[layer][region].height) {
 								color = regions[layer][region].color;
 								break;
 							}
+						}*/
+						for(int region = 0; region<regions.length; region++) {
+							if(c < regions[region].height) {
+								color = regions[region].color;
+								break;
+							}
 						}
-						canvas.canvasContext.fillStyle = color;
-						if(color != "") {
-							canvas.DrawPoint({x,y})
-						}
-					}*/
-			        image[x, y] = Color4f(255, 255, 255);
+						image[x, y] = color;
+					}
 				}
 			}
 
@@ -104,6 +191,7 @@ class GetMap: Action {
 			res.writeBody(serializeToJsonString(json), 200);
 		}
 		catch(Exception e) {
+			writeln(e);
 			//Write result
 			Json json = Json.emptyObject;
 			json["success"] = false;

@@ -2,6 +2,7 @@ module application.perlin;
 
 import std.math;
 import std.conv;
+import std.stdio;
 
 double PerlinNoise(double x, double y, double z) {
 	int[] p;
@@ -19,10 +20,10 @@ double PerlinNoise(double x, double y, double z) {
 		49,192,214, 31,181,199,106,157,184, 84,204,176,115,121,50,45,127, 4,150,254,
 		138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
 	];
+	p.length = 512;
 	for(int i=0; i < 256 ; i++) {
 		p[256+i] = p[i] = permutation[i]; 
 	}
-
 	int X = to!int(floor(x)) & 255;                  // FIND UNIT CUBE THAT
 	int Y = to!int(floor(y)) & 255;                  // CONTAINS POINT.
 	int Z = to!int(floor(z)) & 255;
