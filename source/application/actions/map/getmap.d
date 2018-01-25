@@ -115,10 +115,12 @@ class GetMap: Action {
 	HttpResponse Perform(HttpRequest req) {
 		HttpResponse res = new HttpResponse;
 		try {
-			double perlinScale = 1;
-			int octaves = 4;
-			double persistence = 0.5;
-			double lacunarity = 2;
+			double perlinScale = req.json["perlinScale"].to!double;
+			int octaves = req.json["octaves"].to!int;
+			double persistence = req.json["persistence"].to!double;
+			double lacunarity = req.json["lacunarity"].to!double;
+			double rotatey = req.json["rotatey"].to!double;
+			double radius = req.json["radius"].to!double;
 
 			auto image = new Image!(PixelFormat.RGB8)(100, 100);
 			int vw = image.width;
@@ -128,7 +130,7 @@ class GetMap: Action {
 			    foreach(x; 0 .. image.width)
 			        image[x, y] = Color4f(0, 0, 0);
 
-			double r = 50;
+			double r = radius;
 			for (int y = 0; y < vh; y++) {
 				auto w = to!int(sqrt(to!float(r*r-(y-vh/2)*(y-vh/2))));
 				if(w > vw/2)
@@ -145,7 +147,7 @@ class GetMap: Action {
 					}
 
 					auto pr = Vector3d();
-					rotateAroundAxis(pr, p, Vector3d(0, 1, 0), 0);
+					rotateAroundAxis(pr, p, Vector3d(0, 1, 0), rotatey);
 					int layer = 0;
 					
 					//for(layer = 0; layer<regions.length; layer++) 
@@ -191,7 +193,7 @@ class GetMap: Action {
 			res.writeBody(serializeToJsonString(json), 200);
 		}
 		catch(Exception e) {
-			writeln(e);
+			//writeln(e);
 			//Write result
 			Json json = Json.emptyObject;
 			json["success"] = false;
@@ -204,6 +206,7 @@ class GetMap: Action {
 class Test : TestSuite {
 	this() {
 		AddTest(&GetMap_should_generate_image_file);
+		AddTest(&GetMap_can_generate_with_specific_parameters);
 	}
 
 	override void Setup() {
@@ -216,6 +219,24 @@ class Test : TestSuite {
 		GetMap m = new GetMap();
 
 		ActionTester tester = new ActionTester(&m.Perform);
+
+		Json jsonoutput = tester.GetResponseJson();
+		assertEqual(jsonoutput["success"].to!bool, false);
+	}
+
+	void GetMap_can_generate_with_specific_parameters() {
+		GetMap m = new GetMap();
+		Json jsoninput = Json.emptyObject;
+		jsoninput["perlinScale"] = 1;
+		jsoninput["octaves"] = 4;
+		jsoninput["persistence"] = 0.5;
+		jsoninput["lacunarity"] = 2;
+		jsoninput["rotatey"] = 0;
+		jsoninput["radius"] = 50;
+		ActionTester tester = new ActionTester(&m.Perform, serializeToJsonString(jsoninput));
+
+		Json jsonoutput = tester.GetResponseJson();
+		assertEqual(jsonoutput["success"].to!bool, true);
 	}
 }
 
