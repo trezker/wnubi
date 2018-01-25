@@ -215,7 +215,7 @@ class Test : TestSuite {
 	override void Teardown() {
 	}
 
-	void GetMap_should_generate_image_file() {
+	void GetMap_without_parameters_should_fail() {
 		GetMap m = new GetMap();
 
 		ActionTester tester = new ActionTester(&m.Perform);
@@ -224,7 +224,7 @@ class Test : TestSuite {
 		assertEqual(jsonoutput["success"].to!bool, false);
 	}
 
-	void GetMap_can_generate_with_specific_parameters() {
+	void GetMap_with_specific_parameters_should_succeed() {
 		GetMap m = new GetMap();
 		Json jsoninput = Json.emptyObject;
 		jsoninput["perlinScale"] = 1;
