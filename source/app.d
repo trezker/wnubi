@@ -29,6 +29,7 @@ shared static this() {
 
 	auto router = new URLRouter;
 	router.post("/ajax*", &server.PerformAjax);
+	router.get("/get", &server.PerformGet);
 	router.get("/ws", handleWebSockets(&server.Websocket));
 	router.get("/source/*", serveStaticFiles("./public/"));
 	router.get("/*", &server.Page);

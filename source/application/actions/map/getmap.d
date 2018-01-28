@@ -201,12 +201,71 @@ class GetMap: Action {
 		}
 		return res;
 	}
+/*
+	IFImage im;
+
+	void setup(Mongo m, ref Model_method[string][string] models) {
+		im = read_image("./maps/125716.png");		
+
+		int x = 110;
+		int y = 510;
+    	ubyte[] part_map;
+    	int ppi = 0;
+    	for(int ly = 0; ly < 100; ++ly) {
+	    	for(int lx = 0; lx < 100; ++lx) {
+    			int cx = x + lx;
+    			int cy = y + ly;
+    			int pi = (cx + im.w * cy) * 4;
+    			part_map ~= im.pixels[pi..(pi+3)];
+    			ppi += 4;
+	    	}
+    	}
+    	write_image("./maps/part.png", 100, 100, part_map);
+
+		mongo = m;
+		models["map"]["get_local_map"] = Model_method(
+			[],
+			&this.get_local_map
+		);
+	}
+
+	void get_local_map(HTTPServerRequest req, HTTPServerResponse res) {
+		int x = 110;
+		int y = 510;
+    	ubyte[] part_map;
+    	ubyte[] blank_pixel = [0, 0, 0, 0];
+    	for(int ly = 0; ly < 100; ++ly) {
+	    	for(int lx = 0; lx < 100; ++lx) {
+	    		int dx = lx-50;
+	    		int dy = ly-50;
+	    		if(dx*dx+dy*dy > 50*50) {
+	    			part_map ~= blank_pixel[0..3];
+	    			continue;
+	    		}
+
+    			int cx = x + lx;
+    			int cy = y + ly;
+    			if(cx<0)
+    				cx += im.w;
+    			if(cx>=im.w)
+    				cx -= im.w;
+    			if(cy<0)
+    				cy += im.h;
+    			if(cy>=im.h)
+    				cy -= im.h;
+    			int pi = (cx + im.w * cy) * 4;
+    			part_map ~= im.pixels[pi..(pi+3)];
+	    	}
+    	}
+    	ubyte[] part = write_png_to_mem(100, 100, part_map);
+		res.writeBody(part, "image/png");
+*/
 }
 
 class Test : TestSuite {
 	this() {
-		AddTest(&GetMap_should_generate_image_file);
-		AddTest(&GetMap_can_generate_with_specific_parameters);
+		AddTest(&GetMap_without_parameters_should_fail);
+		AddTest(&GetMap_with_specific_parameters_should_succeed);
 	}
 
 	override void Setup() {

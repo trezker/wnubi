@@ -15,6 +15,7 @@ import vibe.core.core : sleep;
 import vibe.http.fileserver;
 
 import boiler.Ajax;
+import boiler.Get;
 import boiler.HttpRequest;
 import boiler.HttpResponse;
 import application.Application;
@@ -23,10 +24,12 @@ class Server {
 private:
 	Application application;
 	Ajax ajax;
+	Get get;
 	SessionStore sessionstore;
 public:
 	bool Setup() {
 		ajax = new Ajax();
+		get = new Get();
 		application = new Application();
 		application.SetupAjaxMethods(ajax);
 		sessionstore = new MemorySessionStore ();
@@ -47,6 +50,17 @@ public:
 		try {
 			HttpRequest request = CreateHttpRequestFromVibeHttpRequest(req, sessionstore);
 			HttpResponse response = ajax.Perform (request);
+			RenderVibeHttpResponseFromRequestAndResponse(res, request, response);
+		}
+		catch(Exception e) {
+			logInfo(e.msg);
+		}
+	}
+
+	void PerformGet(HTTPServerRequest req, HTTPServerResponse res) {
+		try {
+			HttpRequest request = CreateHttpRequestFromVibeHttpRequest(req, sessionstore);
+			HttpResponse response = get.Perform (request);
 			RenderVibeHttpResponseFromRequestAndResponse(res, request, response);
 		}
 		catch(Exception e) {
