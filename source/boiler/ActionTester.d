@@ -124,6 +124,11 @@ class ActionTester {
 		return parseJsonString(lines[$-1]);
 	}
 
+	public string GetResponseText() {
+		auto lines = GetResponseLines();
+		return lines[$-1];
+	}
+
 	public const(T) GetResponseSessionValue(T)(string key) {
 		string sessionID = GetResponseSessionID();
 		if(sessionID == null) {

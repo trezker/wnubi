@@ -63,7 +63,12 @@ void RenderVibeHttpResponseFromRequestAndResponse(HTTPServerResponse viberespons
 	if(request.session) {
 		viberesponse.setCookie("session_id", request.session.id);
 	}
-	viberesponse.writeBody(response.content, response.code);
+	if(response.content_type) {
+		viberesponse.writeBody(response.content, response.content_type);
+	}
+	else {
+		viberesponse.writeBody(response.content, response.code);
+	}
 }
 
 class Test : TestSuite {

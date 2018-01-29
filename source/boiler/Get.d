@@ -39,7 +39,7 @@ class Get: Action {
 			Json json = Json.emptyObject;
 			json["success"] = false;
 			res = new HttpResponse;
-				//TODO: 404
+				//TODO: 500
 			res.writeBody(serializeToJsonString(json), 200);
 		}
 		return res;
@@ -52,7 +52,7 @@ class SuccessTestHandler : Action {
 		Json json = Json.emptyObject;
 		json["success"] = true;
 		//TODO: file content
-		res.writeBody(serializeToJsonString(json), 200);
+		res.writeBody("Hello world", "text/plain");
 		return res;
 	}
 }
@@ -74,9 +74,10 @@ class Test : TestSuite {
 	void Call_without_parameters_should_fail() {
 		Get get = new Get();
 
+		//TODO: Get parameters instead of json
 		ActionTester tester = new ActionTester(&get.Perform);
 
-		//TODO: detect 404
+		//TODO: detect 500
 		Json jsonoutput = tester.GetResponseJson();
 		assertEqual(jsonoutput["success"].to!bool, false);
 	}
@@ -84,6 +85,7 @@ class Test : TestSuite {
 	void Call_to_method_that_doesnt_exist_should_fail() {
 		Get get = new Get();
 
+		//TODO: Get parameters instead of json
 		ActionTester tester = new ActionTester(&get.Perform, "{\"action\": \"none\"}");
 
 		//TODO: detect 404
@@ -95,11 +97,11 @@ class Test : TestSuite {
 		Get get = new Get();
 		get.SetActionCreator("test", () => new SuccessTestHandler);
 
+		//TODO: Get parameters instead of json
 		ActionTester tester = new ActionTester(&get.Perform, "{\"action\": \"test\"}");
 
-		//TODO: detect file content
-		Json jsonoutput = tester.GetResponseJson();
-		assertEqual(jsonoutput["success"].to!bool, true);
+		string textoutput = tester.GetResponseText();
+		assertEqual(textoutput, "Hello world");
 	}
 }
 
