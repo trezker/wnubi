@@ -2,6 +2,7 @@ module boiler.HttpRequest;
 
 import std.conv;
 import std.stdio;
+import std.array;
 import vibe.http.session;
 import vibe.http.server;
 import vibe.data.json;
@@ -19,6 +20,8 @@ class HttpRequest {
 	Session session;
 	Json json;
 	string path;
+	string querystring;
+	string[string] query;
 
 	this(SessionStore sessionstore) {
 		this.sessionstore = sessionstore;
@@ -55,6 +58,12 @@ HttpRequest CreateHttpRequestFromVibeHttpRequest(HTTPServerRequest viberequest, 
 	}
 
 	request.path = viberequest.path;
+	request.querystring = viberequest.queryString;
+	auto querystringSplit = request.querystring.split("&");
+	foreach(val; querystringSplit) {
+		auto valsplit = val.split("=");
+		request.query[valsplit[0]] = valsplit[1];
+	}
 	
 	return request;
 }

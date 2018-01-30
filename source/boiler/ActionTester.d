@@ -196,6 +196,22 @@ class JsonInputDummyHandler {
 	}
 }
 
+class GetInputDummyHandler {
+	bool receivedGet;
+	
+	this() {
+		receivedGet = false;
+	}
+
+	HttpResponse handleRequest(HttpRequest request) {
+		HttpResponse response = new HttpResponse;
+		if(request.query["one"].to!int == 1 && request.query["two"].to!int == 2) {
+			receivedGet = true;
+		}
+		return response;
+	}
+}
+
 class SessionDummyHandler {
 	HttpResponse handleRequest(HttpRequest request) {
 		HttpResponse response = new HttpResponse;
@@ -230,6 +246,7 @@ class Test : TestSuite {
 	this() {
 		AddTest(&Creating_a_tester_with_handler_calls_the_handler);
 		AddTest(&Creating_a_tester_with_json_post_data_should_give_the_handler_access_to_the_data);
+		AddTest(&Creating_a_tester_with_get_data_should_give_the_handler_access_to_the_data);
 		AddTest(&When_testing_a_handler_that_sets_session_values_you_should_be_able_to_read_them);
 		AddTest(&Subsequent_calls_after_session_value_is_set_should_have_that_session_in_request);
 	}
@@ -254,6 +271,14 @@ class Test : TestSuite {
 		auto tester = new ActionTester(&dummy.handleRequest, "{ \"data\": 4 }", "");
 
 		assert(dummy.receivedJson);
+	}
+
+	void Creating_a_tester_with_get_data_should_give_the_handler_access_to_the_data() {
+		auto dummy = new GetInputDummyHandler();
+		
+		auto tester = new ActionTester(&dummy.handleRequest, "http://test.com/test?one=1&two=2");
+
+		assert(dummy.receivedGet);
 	}
 
 	void When_testing_a_handler_that_sets_session_values_you_should_be_able_to_read_them() {
