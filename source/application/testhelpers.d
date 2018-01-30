@@ -18,7 +18,7 @@ void CreateTestUser(string name, string password) {
 	jsoninput["username"] = name;
 	jsoninput["password"] = password;
 
-	ActionTester tester = new ActionTester(&m.Perform, serializeToJsonString(jsoninput));
+	ActionTester tester = new ActionTester(&m.Perform, serializeToJsonString(jsoninput), "");
 
 	database.Sync();
 }
@@ -32,6 +32,6 @@ ActionTester TestLogin(string name, string password) {
 	jsoninput["username"] = name;
 	jsoninput["password"] = password;
 
-	return new ActionTester(&login.Perform, serializeToJsonString(jsoninput));
+	return new ActionTester(&login.Perform, serializeToJsonString(jsoninput), "");
 }
 

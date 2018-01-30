@@ -71,7 +71,7 @@ class Test : TestSuite {
 	void Call_without_parameters_should_fail() {
 		Ajax ajax = new Ajax();
 
-		ActionTester tester = new ActionTester(&ajax.Perform);
+		ActionTester tester = new ActionTester(&ajax.Perform, "");
 
 		Json jsonoutput = tester.GetResponseJson();
 		assertEqual(jsonoutput["success"].to!bool, false);
@@ -80,7 +80,7 @@ class Test : TestSuite {
 	void Call_to_method_that_doesnt_exist_should_fail() {
 		Ajax ajax = new Ajax();
 
-		ActionTester tester = new ActionTester(&ajax.Perform, "{\"action\": \"none\"}");
+		ActionTester tester = new ActionTester(&ajax.Perform, "{\"action\": \"none\"}", "");
 
 		Json jsonoutput = tester.GetResponseJson();
 		assertEqual(jsonoutput["success"].to!bool, false);
@@ -90,7 +90,7 @@ class Test : TestSuite {
 		Ajax ajax = new Ajax();
 		ajax.SetActionCreator("test", () => new SuccessTestHandler);
 
-		ActionTester tester = new ActionTester(&ajax.Perform, "{\"action\": \"test\"}");
+		ActionTester tester = new ActionTester(&ajax.Perform, "{\"action\": \"test\"}", "");
 
 		Json jsonoutput = tester.GetResponseJson();
 		assertEqual(jsonoutput["success"].to!bool, true);

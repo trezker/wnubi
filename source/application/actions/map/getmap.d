@@ -277,7 +277,7 @@ class Test : TestSuite {
 	void GetMap_without_parameters_should_fail() {
 		GetMap m = new GetMap();
 
-		ActionTester tester = new ActionTester(&m.Perform);
+		ActionTester tester = new ActionTester(&m.Perform, "");
 
 		Json jsonoutput = tester.GetResponseJson();
 		assertEqual(jsonoutput["success"].to!bool, false);
@@ -292,7 +292,7 @@ class Test : TestSuite {
 		jsoninput["lacunarity"] = 2;
 		jsoninput["rotatey"] = 0;
 		jsoninput["radius"] = 50;
-		ActionTester tester = new ActionTester(&m.Perform, serializeToJsonString(jsoninput));
+		ActionTester tester = new ActionTester(&m.Perform, serializeToJsonString(jsoninput), "");
 
 		Json jsonoutput = tester.GetResponseJson();
 		assertEqual(jsonoutput["success"].to!bool, true);

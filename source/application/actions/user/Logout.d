@@ -55,7 +55,7 @@ class Test : TestSuite {
 		auto tester = TestLogin("testname", "testpass");
 
 		Logout logoutHandler = new Logout();
-		tester.Request(&logoutHandler.Perform);
+		tester.Request(&logoutHandler.Perform, "");
 		
 		Json jsonoutput = tester.GetResponseJson();
 		assertEqual(jsonoutput["success"].to!bool, true);

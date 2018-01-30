@@ -27,33 +27,39 @@ class ActionTester {
 	SessionStore sessionstore;
 	string sessionID;
 
-	this(Request_delegate handler) {
+	this(Request_delegate handler, string url) {
 		vibesessionstore = new MemorySessionStore ();
 		sessionstore = new MemorySessionStore ();
-		Request(handler);
+		Request(handler, url);
 	}
 
-	this(Request_delegate handler, string input) {
+	this(Request_delegate handler, string input, string url) {
 		vibesessionstore = new MemorySessionStore ();
 		sessionstore = new MemorySessionStore ();
-		Request(handler, input);
+		Request(handler, url, input);
 	}
 
-	public void Request(Request_delegate handler) {
+	public void Request(Request_delegate handler, string url) {
+		if(url == "") {
+			url = "http://localhost/test";
+		}
 		InetHeaderMap headers;
 		if(sessionID != null) {
 			headers["Cookie"] = "session_id=" ~ sessionID;
 		}
-		viberequest = createTestHTTPServerRequest(URL("http://localhost/test"), HTTPMethod.POST, headers);
+		viberequest = createTestHTTPServerRequest(URL(url), HTTPMethod.POST, headers);
 		CallHandler(handler);
 	}
 
-	public void Request(Request_delegate handler, string input) {
-		PrepareJsonRequest(input);
+	public void Request(Request_delegate handler, string input, string url) {
+		PrepareJsonRequest(url, input);
 		CallHandler(handler);
 	}
 
-	private void PrepareJsonRequest(string input) {
+	private void PrepareJsonRequest(string input, string url = "") {
+		if(url == "") {
+			url = "http://localhost/test";
+		}
 		InetHeaderMap headers;
 		headers["Content-Type"] = "application/json";
 
@@ -62,7 +68,7 @@ class ActionTester {
 		}
 
 		auto inputStream = createInputStreamFromString(input);
-		viberequest = createTestHTTPServerRequest(URL("http://localhost/test"), HTTPMethod.POST, headers, inputStream);
+		viberequest = createTestHTTPServerRequest(URL(url), HTTPMethod.POST, headers, inputStream);
 		PopulateRequestJson();
 	}
 
@@ -237,7 +243,7 @@ class Test : TestSuite {
 	void Creating_a_tester_with_handler_calls_the_handler() {
 		auto dummy = new CallFlagDummyHandler();
 		
-		auto tester = new ActionTester(&dummy.handleRequest);
+		auto tester = new ActionTester(&dummy.handleRequest, "");
 
 		assert(dummy.called);
 	}
@@ -245,7 +251,7 @@ class Test : TestSuite {
 	void Creating_a_tester_with_json_post_data_should_give_the_handler_access_to_the_data() {
 		auto dummy = new JsonInputDummyHandler();
 		
-		auto tester = new ActionTester(&dummy.handleRequest, "{ \"data\": 4 }");
+		auto tester = new ActionTester(&dummy.handleRequest, "{ \"data\": 4 }", "");
 
 		assert(dummy.receivedJson);
 	}
@@ -253,7 +259,7 @@ class Test : TestSuite {
 	void When_testing_a_handler_that_sets_session_values_you_should_be_able_to_read_them() {
 		auto dummy = new SessionDummyHandler();
 		
-		auto tester = new ActionTester(&dummy.handleRequest);
+		auto tester = new ActionTester(&dummy.handleRequest, "");
 		assertNotEqual(tester.GetResponseSessionID(), null);
 		string value = tester.GetResponseSessionValue!string("testkey");
 		assertEqual(value, "testvalue");
@@ -261,13 +267,13 @@ class Test : TestSuite {
 
 	void Subsequent_calls_after_session_value_is_set_should_have_that_session_in_request() {
 		auto responsesessinohandler = new SessionDummyHandler();
-		auto tester = new ActionTester(&responsesessinohandler.handleRequest);
+		auto tester = new ActionTester(&responsesessinohandler.handleRequest, "");
 
 		auto requestsessionhandler = new RequestSessionDummyHandler();
-		tester.Request(&requestsessionhandler.handleRequest);
+		tester.Request(&requestsessionhandler.handleRequest, "");
 
 		requestsessionhandler = new RequestSessionDummyHandler();
-		tester.Request(&requestsessionhandler.handleRequest);
+		tester.Request(&requestsessionhandler.handleRequest, "");
 
 		assert(requestsessionhandler.sessionok);
 	}

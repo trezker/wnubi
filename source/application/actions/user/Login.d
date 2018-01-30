@@ -75,7 +75,7 @@ unittest {
 	try {
 		Login m = new Login(new User_storage(database));
 
-		ActionTester tester = new ActionTester(&m.Perform);
+		ActionTester tester = new ActionTester(&m.Perform, "");
 
 		Json jsonoutput = tester.GetResponseJson();
 		assertEqual(jsonoutput["success"].to!bool, false);

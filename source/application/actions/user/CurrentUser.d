@@ -57,7 +57,7 @@ unittest {
 		auto tester = TestLogin(username, "testpass");
 
 		CurrentUser currentUser = new CurrentUser(new User_storage(database));
-		tester.Request(&currentUser.Perform);
+		tester.Request(&currentUser.Perform, "");
 		
 		Json jsonoutput = tester.GetResponseJson();
 		assertEqual(jsonoutput["success"].to!bool, true);
@@ -78,7 +78,7 @@ unittest {
 	
 	try {
 		CurrentUser currentUser = new CurrentUser(new User_storage(database));
-		ActionTester tester = new ActionTester(&currentUser.Perform);
+		ActionTester tester = new ActionTester(&currentUser.Perform, "");
 		
 		Json jsonoutput = tester.GetResponseJson();
 		assertEqual(jsonoutput["success"].to!bool, true);

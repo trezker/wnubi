@@ -75,7 +75,7 @@ class Test : TestSuite {
 		Get get = new Get();
 
 		//TODO: Get parameters instead of json
-		ActionTester tester = new ActionTester(&get.Perform);
+		ActionTester tester = new ActionTester(&get.Perform, "");
 
 		//TODO: detect 500
 		Json jsonoutput = tester.GetResponseJson();
@@ -86,7 +86,7 @@ class Test : TestSuite {
 		Get get = new Get();
 
 		//TODO: Get parameters instead of json
-		ActionTester tester = new ActionTester(&get.Perform, "{\"action\": \"none\"}");
+		ActionTester tester = new ActionTester(&get.Perform, "{\"action\": \"none\"}", "");
 
 		//TODO: detect 404
 		Json jsonoutput = tester.GetResponseJson();
@@ -98,7 +98,7 @@ class Test : TestSuite {
 		get.SetActionCreator("test", () => new SuccessTestHandler);
 
 		//TODO: Get parameters instead of json
-		ActionTester tester = new ActionTester(&get.Perform, "{\"action\": \"test\"}");
+		ActionTester tester = new ActionTester(&get.Perform, "{\"action\": \"test\"}", "");
 
 		string textoutput = tester.GetResponseText();
 		assertEqual(textoutput, "Hello world");

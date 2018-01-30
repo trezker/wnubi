@@ -77,7 +77,7 @@ class Test : TestSuite {
 	void Create_user_without_parameters_should_fail() {
 		CreateUser m = new CreateUser(new User_storage(database));
 
-		ActionTester tester = new ActionTester(&m.Perform);
+		ActionTester tester = new ActionTester(&m.Perform, "");
 
 		Json jsonoutput = tester.GetResponseJson();
 		assertEqual(jsonoutput["success"].to!bool, false);
@@ -89,7 +89,7 @@ class Test : TestSuite {
 		jsoninput["username"] = "testname";
 		jsoninput["password"] = "testpass";
 
-		ActionTester tester = new ActionTester(&m.Perform, serializeToJsonString(jsoninput));
+		ActionTester tester = new ActionTester(&m.Perform, serializeToJsonString(jsoninput), "");
 
 		Json jsonoutput = tester.GetResponseJson();
 		assertEqual(jsonoutput["success"].to!bool, true);
@@ -105,7 +105,7 @@ class Test : TestSuite {
 		jsoninput["username"] = username;
 		jsoninput["password"] = password;
 
-		ActionTester tester = new ActionTester(&m.Perform, serializeToJsonString(jsoninput));
+		ActionTester tester = new ActionTester(&m.Perform, serializeToJsonString(jsoninput), "");
 		
 		auto obj = user_storage.UserByName(username);
 		assert(isSameHash(toPassword(password.dup), parseHash(obj["password"].get!string)));
