@@ -3,13 +3,20 @@ module boiler.HttpRequest;
 import std.conv;
 import std.stdio;
 import std.array;
+import std.string;
+
 import vibe.http.session;
 import vibe.http.server;
 import vibe.data.json;
 
+import vibe.utils.string;
+import vibe.utils.dictionarylist;
+
 import boiler.helpers;
 import boiler.HttpResponse;
 import boiler.testsuite;
+
+alias FormFields = DictionaryList!(string, true, 16);
 
 interface Action {
 	public HttpResponse Perform(HttpRequest req);
@@ -21,7 +28,7 @@ class HttpRequest {
 	Json json;
 	string path;
 	string querystring;
-	string[string] query;
+	FormFields query;
 
 	this(SessionStore sessionstore) {
 		this.sessionstore = sessionstore;
@@ -58,12 +65,7 @@ HttpRequest CreateHttpRequestFromVibeHttpRequest(HTTPServerRequest viberequest, 
 	}
 
 	request.path = viberequest.path;
-	request.querystring = viberequest.queryString;
-	auto querystringSplit = request.querystring.split("&");
-	foreach(val; querystringSplit) {
-		auto valsplit = val.split("=");
-		request.query[valsplit[0]] = valsplit[1];
-	}
+	request.query = viberequest.query;
 	
 	return request;
 }

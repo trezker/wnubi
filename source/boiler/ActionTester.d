@@ -9,6 +9,7 @@ import vibe.utils.string;
 import vibe.inet.message;
 import vibe.stream.memory;
 import vibe.stream.operations;
+import vibe.textfilter.urlencode;
 
 import boiler.helpers;
 import boiler.testsuite;
@@ -16,6 +17,41 @@ import boiler.HttpRequest;
 import boiler.HttpResponse;
 
 alias Request_delegate = HttpResponse delegate(HttpRequest req);
+
+//Function lifted from vibe webform.d
+void parseURLEncodedForm(string str, ref FormFields params)
+@safe {
+	while (str.length > 0) {
+		// name part
+		auto idx = str.indexOf("=");
+		if (idx == -1) {
+			idx = vibe.utils.string.indexOfAny(str, "&;");
+			if (idx == -1) {
+				params.addField(formDecode(str[0 .. $]), "");
+				return;
+			} else {
+				params.addField(formDecode(str[0 .. idx]), "");
+				str = str[idx+1 .. $];
+				continue;
+			}
+		} else {
+			auto idx_amp = vibe.utils.string.indexOfAny(str, "&;");
+			if (idx_amp > -1 && idx_amp < idx) {
+				params.addField(formDecode(str[0 .. idx_amp]), "");
+				str = str[idx_amp+1 .. $];
+				continue;
+			} else {
+				string name = formDecode(str[0 .. idx]);
+				str = str[idx+1 .. $];
+				// value part
+				for( idx = 0; idx < str.length && str[idx] != '&' && str[idx] != ';'; idx++) {}
+				string value = formDecode(str[0 .. idx]);
+				params.addField(name, value);
+				str = idx < str.length ? str[idx+1 .. $] : null;
+			}
+		}
+	}
+}
 
 class ActionTester {
 	HTTPServerRequest viberequest;
@@ -82,7 +118,8 @@ class ActionTester {
 
 	private void CallHandler(Request_delegate handler) {
 		SetRequestCookies();
-		
+		parseURLEncodedForm(viberequest.queryString, viberequest.query);
+	
 		request = CreateHttpRequestFromVibeHttpRequest(viberequest, sessionstore);
 		HttpResponse response = handler(request);
 
