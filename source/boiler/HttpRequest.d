@@ -65,6 +65,7 @@ HttpRequest CreateHttpRequestFromVibeHttpRequest(HTTPServerRequest viberequest, 
 	}
 
 	request.path = viberequest.path;
+	request.querystring = viberequest.queryString;
 	request.query = viberequest.query;
 	
 	return request;

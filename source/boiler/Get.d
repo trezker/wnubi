@@ -1,6 +1,7 @@
 module boiler.Get;
 
 import std.stdio;
+import std.string;
 import vibe.http.server;
 import vibe.data.json;
 
@@ -22,25 +23,19 @@ class Get: Action {
 	public HttpResponse Perform(HttpRequest req) {
 		HttpResponse res;
 		try {
-			string actionName = req.json["action"].to!string;
+			string actionName = req.query["action"].to!string;
 			if(actionName in actionCreators) {
 				Action action = actionCreators[actionName]();
 				res = action.Perform (req);
 			}
 			else {
 				res = new HttpResponse;
-				Json json = Json.emptyObject;
-				json["success"] = false;
-				//TODO: 404
-				res.writeBody(serializeToJsonString(json), 200);
+				res.writeBody("<html><head><title>404 Not found</title></head><body><h1>404 Not found</h1></body></html>", 404);
 			}
 		}
 		catch(Exception e) {
-			Json json = Json.emptyObject;
-			json["success"] = false;
 			res = new HttpResponse;
-				//TODO: 500
-			res.writeBody(serializeToJsonString(json), 200);
+			res.writeBody("<html><head><title>500 Error</title></head><body><h1>500 Error</h1></body></html>", 500);
 		}
 		return res;
 	}
@@ -49,18 +44,20 @@ class Get: Action {
 class SuccessTestHandler : Action {
 	public HttpResponse Perform(HttpRequest req) {
 		HttpResponse res = new HttpResponse;
-		Json json = Json.emptyObject;
-		json["success"] = true;
-		//TODO: file content
 		res.writeBody("Hello world", "text/plain");
 		return res;
 	}
 }
 
+class ErrorTestHandler : Action {
+	public HttpResponse Perform(HttpRequest req) {
+		throw(new Exception("Error"));
+	}
+}
 
 class Test : TestSuite {
 	this() {
-		AddTest(&Call_without_parameters_should_fail);
+		AddTest(&Exceptions_should_return_error_page);
 		AddTest(&Call_to_method_that_doesnt_exist_should_fail);
 		AddTest(&Call_to_method_that_exists_should_succeed);
 	}
@@ -71,34 +68,29 @@ class Test : TestSuite {
 	override void Teardown() {
 	}
 
-	void Call_without_parameters_should_fail() {
+	void Exceptions_should_return_error_page() {
 		Get get = new Get();
+		get.SetActionCreator("test", () => new ErrorTestHandler);
+		ActionTester tester = new ActionTester(&get.Perform, "http://test.com/test?action=test");
 
-		//TODO: Get parameters instead of json
-		ActionTester tester = new ActionTester(&get.Perform, "");
-
-		//TODO: detect 500
-		Json jsonoutput = tester.GetResponseJson();
-		assertEqual(jsonoutput["success"].to!bool, false);
+		string textoutput = tester.GetResponseText();
+		assertEqual(indexOf(textoutput, "500") == -1, false);
 	}
 
 	void Call_to_method_that_doesnt_exist_should_fail() {
 		Get get = new Get();
 
-		//TODO: Get parameters instead of json
-		ActionTester tester = new ActionTester(&get.Perform, "{\"action\": \"none\"}", "");
+		ActionTester tester = new ActionTester(&get.Perform, "{\"action\": \"none\"}", "http://test.com/test?action=test");
 
-		//TODO: detect 404
-		Json jsonoutput = tester.GetResponseJson();
-		assertEqual(jsonoutput["success"].to!bool, false);
+		string textoutput = tester.GetResponseText();
+		assertEqual(indexOf(textoutput, "404") == -1, false);
 	}
 
 	void Call_to_method_that_exists_should_succeed() {
 		Get get = new Get();
 		get.SetActionCreator("test", () => new SuccessTestHandler);
 
-		//TODO: Get parameters instead of json
-		ActionTester tester = new ActionTester(&get.Perform, "{\"action\": \"test\"}", "");
+		ActionTester tester = new ActionTester(&get.Perform, "{\"action\": \"test\"}", "http://test.com/test?action=test");
 
 		string textoutput = tester.GetResponseText();
 		assertEqual(textoutput, "Hello world");
