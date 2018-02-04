@@ -6,8 +6,8 @@ import std.conv;
 import dauth;
 import vibe.http.server;
 import vibe.db.mongo.mongo;
-import dlib.image;
 import dlib.math;
+import imageformats;
 
 import boiler.ActionTester;
 import boiler.helpers;
@@ -20,94 +20,49 @@ import application.perlin;
 struct Region {
 	string name;
 	double height;
-	Color4f color;
+	ubyte[] color;
 };
-/*
-Region[int] [
-	[
-		{
-			name: "Water deep",
-			height: 0.3,
-			color: color3(0x0000aa)
-		},
-		{
-			name: "Water shallow",
-			height: 0.4,
-			color: color3(0x0000ff)
-		},
-		{
-			name: "Sand",
-			height: 0.45,
-			color: color3(0xe3ae0b)
-		},
-		{
-			name: "Grass",
-			height: 0.55,
-			color: color3(0x48cb48)
-		},
-		{
-			name: "Grass 2",
-			height: 0.6,
-			color: color3(0x26a626)
-		},
-		{
-			name: "Rock",
-			height: 0.7,
-			color: color3(0x746444)
-		},
-		{
-			name: "Rock 2",
-			height: 0.9,
-			color: color3(0x6a604b)
-		},
-		{
-			name: "Snow",
-			height: 1,
-			color: color3(0xffffff)
-		}
-	]
-];*/
 
 Region[] regions = [
 	{
 		name: "Water deep",
 		height: 0.3,
-		color: color3(0x0000aa)
+		color: [0x00,0x00,0xaa,0xff]
 	},
 	{
 		name: "Water shallow",
 		height: 0.4,
-		color: color3(0x0000ff)
+		color: [0x00,0x00,0xff,0xff]
 	},
 	{
 		name: "Sand",
 		height: 0.45,
-		color: color3(0xe3ae0b)
+		color: [0xe3,0xae,0x0b,0xff]
 	},
 	{
 		name: "Grass",
 		height: 0.55,
-		color: color3(0x48cb48)
+		color: [0x48,0xcb,0x48,0xff]
 	},
 	{
 		name: "Grass 2",
 		height: 0.6,
-		color: color3(0x26a626)
+		color: [0x26,0xa6,0x26,0xff]
 	},
 	{
 		name: "Rock",
 		height: 0.7,
-		color: color3(0x746444)
+		color: [0x74,0x64,0x44,0xff]
 	},
 	{
 		name: "Rock 2",
 		height: 0.9,
-		color: color3(0x6a604b)
+		color: [0x6a,0x60,0x4b,0xff]
 	},
 	{
 		name: "Snow",
 		height: 1,
-		color: color3(0xffffff)
+		color: [0xff,0xff,0xff,0xff]
 	}
 ];
 
@@ -122,20 +77,22 @@ class GetMap: Action {
 			double rotatey = req.json["rotatey"].to!double;
 			double radius = req.json["radius"].to!double;
 
-			auto image = new Image!(PixelFormat.RGB8)(100, 100);
-			int vw = image.width;
-			int vh = image.height;
+	    	ubyte[] image;
+	    	ubyte[] blank_pixel = [0, 0, 0, 0];
 
-			foreach(y; 0 .. image.height)
-			    foreach(x; 0 .. image.width)
-			        image[x, y] = Color4f(0, 0, 0);
+			int vw = 100;
+			int vh = 100;
 
 			double r = radius;
 			for (int y = 0; y < vh; y++) {
 				auto w = to!int(sqrt(to!float(r*r-(y-vh/2)*(y-vh/2))));
 				if(w > vw/2)
 					w = vw/2;
-				for(int x = vw/2-w; x < vw/2+w; x++) {
+				for(int x = 0; x < vw; x++) {
+					if(x < vw/2-w || x > vw/2+w) {
+						image ~= blank_pixel[0..3];
+						continue;
+					}
 					auto p = Vector3d(
 						(x-vw/2)/r, 
 						(y-vh/2)/r,
@@ -165,7 +122,7 @@ class GetMap: Action {
 						}
 
 						c = (c+1)/2;
-						Color4f color = Color4f(255, 255, 255);
+						ubyte[] color = [0x00,0x00,0xaa,0xff];
 /*
 						for(int region = 0; region<regions[layer].length; region++) {
 							if(c < regions[layer][region].height) {
@@ -179,13 +136,16 @@ class GetMap: Action {
 								break;
 							}
 						}
-						image[x, y] = color;
+						image ~= color[0..3];
 					}
 				}
 			}
 
-			savePNG(image, "public/map/test.png");
-
+			write_image("public/map/test.png", vw, vh, image);
+	    	/*
+			ubyte[] part = write_png_to_mem(100, 100, part_map);
+			res.writeBody(part, "image/png");
+*/
 			//Write result
 			Json json = Json.emptyObject;
 			json["success"] = true;
@@ -201,65 +161,6 @@ class GetMap: Action {
 		}
 		return res;
 	}
-/*
-	IFImage im;
-
-	void setup(Mongo m, ref Model_method[string][string] models) {
-		im = read_image("./maps/125716.png");		
-
-		int x = 110;
-		int y = 510;
-    	ubyte[] part_map;
-    	int ppi = 0;
-    	for(int ly = 0; ly < 100; ++ly) {
-	    	for(int lx = 0; lx < 100; ++lx) {
-    			int cx = x + lx;
-    			int cy = y + ly;
-    			int pi = (cx + im.w * cy) * 4;
-    			part_map ~= im.pixels[pi..(pi+3)];
-    			ppi += 4;
-	    	}
-    	}
-    	write_image("./maps/part.png", 100, 100, part_map);
-
-		mongo = m;
-		models["map"]["get_local_map"] = Model_method(
-			[],
-			&this.get_local_map
-		);
-	}
-
-	void get_local_map(HTTPServerRequest req, HTTPServerResponse res) {
-		int x = 110;
-		int y = 510;
-    	ubyte[] part_map;
-    	ubyte[] blank_pixel = [0, 0, 0, 0];
-    	for(int ly = 0; ly < 100; ++ly) {
-	    	for(int lx = 0; lx < 100; ++lx) {
-	    		int dx = lx-50;
-	    		int dy = ly-50;
-	    		if(dx*dx+dy*dy > 50*50) {
-	    			part_map ~= blank_pixel[0..3];
-	    			continue;
-	    		}
-
-    			int cx = x + lx;
-    			int cy = y + ly;
-    			if(cx<0)
-    				cx += im.w;
-    			if(cx>=im.w)
-    				cx -= im.w;
-    			if(cy<0)
-    				cy += im.h;
-    			if(cy>=im.h)
-    				cy -= im.h;
-    			int pi = (cx + im.w * cy) * 4;
-    			part_map ~= im.pixels[pi..(pi+3)];
-	    	}
-    	}
-    	ubyte[] part = write_png_to_mem(100, 100, part_map);
-		res.writeBody(part, "image/png");
-*/
 }
 
 class Test : TestSuite {
