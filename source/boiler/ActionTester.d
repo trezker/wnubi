@@ -197,9 +197,24 @@ class ActionTester {
 
 	public string[] GetResponseLines() {
 		response_stream.seek(0);
- 		string rawResponse = response_stream.readAllUTF8();
- 		rawResponse = rawResponse[0..indexOf(rawResponse, "\0")];
-		return rawResponse.splitLines();
+		//Read utf not working on a filedata stream, so we read the headers line by line.
+		string line;
+		string[] lines;
+		while(line is null) {
+			line = response_stream.readLine().assumeUTF;
+			lines ~= line;
+			//If we find the content is readable, just read it all and split.
+			if(line.indexOf("UTF-8") != -1) {
+				response_stream.seek(0);
+		 		string rawResponse = response_stream.readAllUTF8();
+		 		rawResponse = rawResponse[0..indexOf(rawResponse, "\0")];
+				return rawResponse.splitLines();
+			}
+			if(line != "") {
+				line = null;
+			}
+		}
+		return lines;
 	}
 }
 

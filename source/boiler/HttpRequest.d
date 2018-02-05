@@ -76,10 +76,18 @@ void RenderVibeHttpResponseFromRequestAndResponse(HTTPServerResponse viberespons
 		viberesponse.setCookie("session_id", request.session.id);
 	}
 	if(response.content_type) {
-		viberesponse.writeBody(response.content, response.content_type);
+		if(response.content) {
+			viberesponse.writeBody(response.content, response.content_type);
+		} else {
+			viberesponse.writeBody(response.data, response.content_type);
+		}
 	}
 	else {
-		viberesponse.writeBody(response.content, response.code);
+		if(response.content) {
+			viberesponse.writeBody(response.content, response.code);
+		} else {
+			viberesponse.writeBody(response.data, response.code);
+		}
 	}
 }
 

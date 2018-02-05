@@ -44,7 +44,7 @@ class Get: Action {
 class SuccessTestHandler : Action {
 	public HttpResponse Perform(HttpRequest req) {
 		HttpResponse res = new HttpResponse;
-		res.writeBody("Hello world", "text/plain");
+		res.writeBody("Hello world", 200);
 		return res;
 	}
 }
