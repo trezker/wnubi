@@ -181,15 +181,7 @@ class Test : TestSuite {
 			"radius=50"
 		];
 		string argstring = join(args, "&");
-		/*
-		Json jsoninput = Json.emptyObject;
-		jsoninput["perlinScale"] = 1;
-		jsoninput["octaves"] = 4;
-		jsoninput["persistence"] = 0.5;
-		jsoninput["lacunarity"] = 2;
-		jsoninput["rotatey"] = 0;
-		jsoninput["radius"] = 50;
-*/
+
 		Get get = new Get();
 		get.SetActionCreator("test", () => new GetMap);
 		ActionTester tester = new ActionTester(&get.Perform, "http://test.com/test?" ~ argstring);
