@@ -72,12 +72,12 @@ Region[] regions = [
 class GetMap: Action {
 	HttpResponse Perform(HttpRequest req) {
 		HttpResponse res = new HttpResponse;
-		double perlinScale = req.json["perlinScale"].to!double;
-		int octaves = req.json["octaves"].to!int;
-		double persistence = req.json["persistence"].to!double;
-		double lacunarity = req.json["lacunarity"].to!double;
-		double rotatey = req.json["rotatey"].to!double;
-		double radius = req.json["radius"].to!double;
+		double perlinScale = req.query["perlinScale"].to!double;
+		int octaves = req.query["octaves"].to!int;
+		double persistence = req.query["persistence"].to!double;
+		double lacunarity = req.query["lacunarity"].to!double;
+		double rotatey = req.query["rotatey"].to!double;
+		double radius = req.query["radius"].to!double;
 
     	ubyte[] image;
     	ubyte[] blank_pixel = [0, 0, 0, 0];
@@ -171,6 +171,17 @@ class Test : TestSuite {
 	}
 
 	void GetMap_with_specific_parameters_should_succeed() {
+		string[] args = [
+			"action=test",
+			"perlinScale=1",
+			"octaves=4",
+			"persistence=0.5",
+			"lacunarity=2",
+			"rotatey=0",
+			"radius=50"
+		];
+		string argstring = join(args, "&");
+		/*
 		Json jsoninput = Json.emptyObject;
 		jsoninput["perlinScale"] = 1;
 		jsoninput["octaves"] = 4;
@@ -178,10 +189,10 @@ class Test : TestSuite {
 		jsoninput["lacunarity"] = 2;
 		jsoninput["rotatey"] = 0;
 		jsoninput["radius"] = 50;
-
+*/
 		Get get = new Get();
 		get.SetActionCreator("test", () => new GetMap);
-		ActionTester tester = new ActionTester(&get.Perform, serializeToJsonString(jsoninput), "http://test.com/test?action=test");
+		ActionTester tester = new ActionTester(&get.Perform, "http://test.com/test?" ~ argstring);
 
 		auto responseLines = tester.GetResponseLines();
 		bool pred(string x) { return x.indexOf("image/png") != -1; }
