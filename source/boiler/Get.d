@@ -55,11 +55,21 @@ class ErrorTestHandler : Action {
 	}
 }
 
+class DataTestHandler : Action {
+	public HttpResponse Perform(HttpRequest req) {
+		HttpResponse res = new HttpResponse;
+		ubyte[] data = [1, 2, 3, 45, 243, 43, 123, 53];
+		res.writeBody(data, "image/png");
+		return res;
+	}
+}
+
 class Test : TestSuite {
 	this() {
 		AddTest(&Exceptions_should_return_error_page);
 		AddTest(&Call_to_method_that_doesnt_exist_should_fail);
 		AddTest(&Call_to_method_that_exists_should_succeed);
+		AddTest(&Data_content_should_succeed);
 	}
 
 	override void Setup() {
@@ -94,6 +104,15 @@ class Test : TestSuite {
 
 		string textoutput = tester.GetResponseText();
 		assertEqual(textoutput, "Hello world");
+	}
+
+	void Data_content_should_succeed() {
+		Get get = new Get();
+		get.SetActionCreator("test", () => new DataTestHandler);
+		ActionTester tester = new ActionTester(&get.Perform, "http://test.com/test?action=test");
+
+		string[] headers = tester.GetResponseLines();
+		assertEqual(indexOf(headers[0], "200") == -1, false);
 	}
 }
 
