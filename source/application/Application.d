@@ -6,6 +6,7 @@ import vibe.core.log;
 
 import mondo;
 import boiler.Ajax;
+import boiler.Get;
 import boiler.HttpRequest;
 
 import application.Database;
@@ -14,9 +15,10 @@ import application.CreateUser;
 import application.Login;
 import application.Logout;
 import application.CurrentUser;
+import application.GetMap;
 
 class Application {
-	void SetupAjaxMethods(Ajax ajax) {
+	void SetupActions(Ajax ajax, Get get) {
 		Database database = GetDatabase(null);
 		auto userStorage = new User_storage(database);
 
@@ -24,6 +26,8 @@ class Application {
 		ajax.SetActionCreator("Login", () => new Login(userStorage));
 		ajax.SetActionCreator("Logout", () => new Logout);
 		ajax.SetActionCreator("CurrentUser", () => new CurrentUser(userStorage));
+
+		get.SetActionCreator("GetMap", () => new GetMap);
 	}
 
 	string RewritePath(HttpRequest request) {

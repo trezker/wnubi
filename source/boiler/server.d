@@ -31,7 +31,7 @@ public:
 		ajax = new Ajax();
 		get = new Get();
 		application = new Application();
-		application.SetupAjaxMethods(ajax);
+		application.SetupActions(ajax, get);
 		sessionstore = new MemorySessionStore ();
 		return true;
 	}
