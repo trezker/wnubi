@@ -186,7 +186,8 @@ class Test : TestSuite {
 			"radius=50"
 		];
 		string argstring = join(args, "&");
-
+writeln(sin(1));
+writeln(cos(1));
 		Get get = new Get();
 		get.SetActionCreator("test", () => new GetMap);
 		ActionTester tester = new ActionTester(&get.Perform, "http://test.com/test?" ~ argstring);
