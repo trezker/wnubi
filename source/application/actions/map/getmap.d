@@ -105,8 +105,13 @@ class GetMap: Action {
 					p.z = 0;
 				}
 
-				auto pr = Vector3d();
+				Vector3d pr;// = Vector3d();
 				rotateAroundAxis(pr, p, Vector3d(0, 1, 0), rotatey);
+				//writeln(pr);
+				if(!isNaN(pr.x))
+					p = pr;
+				//writeln(p);
+				//writeln(rotatey);
 				int layer = 0;
 				
 				//for(layer = 0; layer<regions.length; layer++) 
@@ -177,7 +182,7 @@ class Test : TestSuite {
 			"octaves=4",
 			"persistence=0.5",
 			"lacunarity=2",
-			"rotatey=0",
+			"rotatey=1",
 			"radius=50"
 		];
 		string argstring = join(args, "&");
@@ -187,6 +192,7 @@ class Test : TestSuite {
 		ActionTester tester = new ActionTester(&get.Perform, "http://test.com/test?" ~ argstring);
 
 		auto responseLines = tester.GetResponseLines();
+//		writeln(responseLines);
 		bool pred(string x) { return x.indexOf("image/png") != -1; }
 		auto content_type = find!(pred)(responseLines);
 		assertGreaterThan(content_type.length, 0);
@@ -197,3 +203,4 @@ unittest {
 	auto test = new Test;
 	test.Run();
 }
+/*action=GetMap&perlinScale=1&octaves=4&persistence=0.5&lacunarity=2&rotatey=0&radius=50*/
