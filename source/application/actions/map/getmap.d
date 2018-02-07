@@ -76,7 +76,7 @@ class GetMap: Action {
 		int octaves = req.query["octaves"].to!int;
 		double persistence = req.query["persistence"].to!double;
 		double lacunarity = req.query["lacunarity"].to!double;
-		double rotatey = req.query["rotatey"].to!double;
+		double rotatey = req.query["rotatey"].to!double * PI / 180.0;
 		double radius = req.query["radius"].to!double;
 
     	ubyte[] image;
@@ -105,13 +105,7 @@ class GetMap: Action {
 					p.z = 0;
 				}
 
-				Vector3d pr;// = Vector3d();
-				rotateAroundAxis(pr, p, Vector3d(0, 1, 0), rotatey);
-				//writeln(pr);
-				if(!isNaN(pr.x))
-					p = pr;
-				//writeln(p);
-				//writeln(rotatey);
+				rotateAroundAxis(p, Vector3d(0.0, 0.0, 0.0), Vector3d(0.0, 1.0, 0.0), rotatey);
 				int layer = 0;
 				
 				//for(layer = 0; layer<regions.length; layer++) 
@@ -186,8 +180,7 @@ class Test : TestSuite {
 			"radius=50"
 		];
 		string argstring = join(args, "&");
-writeln(sin(1));
-writeln(cos(1));
+
 		Get get = new Get();
 		get.SetActionCreator("test", () => new GetMap);
 		ActionTester tester = new ActionTester(&get.Perform, "http://test.com/test?" ~ argstring);
