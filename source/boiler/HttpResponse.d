@@ -9,6 +9,7 @@ class HttpResponse {
 	void writeBody(string content, int code){
 		this.content = content;
 		this.code = code;
+		this.content_type = "text/html";
 	}
 
 	void writeBody(string content, string content_type){
