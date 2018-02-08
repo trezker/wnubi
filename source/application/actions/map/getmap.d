@@ -79,6 +79,8 @@ class GetMap: Action {
 		double rotatey = req.query["rotatey"].to!double * PI / 180.0;
 		double radius = req.query["radius"].to!double;
 
+		writeln(rotatey);
+
     	ubyte[] image;
     	ubyte[] blank_pixel = [0, 0, 0, 0];
 

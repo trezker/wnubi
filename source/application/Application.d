@@ -32,7 +32,7 @@ class Application {
 
 	string RewritePath(HttpRequest request) {
 		//writeln(request.path);
-		if(!request.session && request.path != "/test") {
+		if(!request.session && request.path != "/test" && request.path != "/map") {
 			return "/login";
 		}
 		return request.path;
