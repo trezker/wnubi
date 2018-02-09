@@ -78,28 +78,29 @@ class GetMap: Action {
 		double lacunarity = req.query["lacunarity"].to!double;
 		double rotatey = req.query["rotatey"].to!double * PI / 180.0;
 		double radius = req.query["radius"].to!double;
-
 		writeln(rotatey);
+		int width = req.query["width"].to!int;
+		int height = req.query["height"].to!int;
+
+		writeln(width);
+		writeln(height);
 
     	ubyte[] image;
     	ubyte[] blank_pixel = [0, 0, 0, 0];
 
-		int vw = 100;
-		int vh = 100;
-
 		double r = radius;
-		for (int y = 0; y < vh; y++) {
-			auto w = to!int(sqrt(to!float(r*r-(y-vh/2)*(y-vh/2))));
-			if(w > vw/2)
-				w = vw/2;
-			for(int x = 0; x < vw; x++) {
-				if(x < vw/2-w || x > vw/2+w) {
+		for (int y = 0; y < height; y++) {
+			auto w = to!int(sqrt(to!float(r*r-(y-height/2)*(y-height/2))));
+			if(w > width/2)
+				w = width/2;
+			for(int x = 0; x < width; x++) {
+				if(x < width/2-w || x > width/2+w) {
 					image ~= blank_pixel[0..3];
 					continue;
 				}
 				auto p = Vector3d(
-					(x-vw/2)/r, 
-					(y-vh/2)/r,
+					(x-width/2)/r, 
+					(y-height/2)/r,
 					0
 				);
 				p.z = sqrt(1-sqrt(p.x*p.x+p.y*p.y));
@@ -144,7 +145,7 @@ class GetMap: Action {
 			}
 		}
 
-		ubyte[] png = write_png_to_mem(100, 100, image);
+		ubyte[] png = write_png_to_mem(width, height, image);
 		res.writeBody(png, "image/png");
 		return res;
 	}
@@ -179,7 +180,9 @@ class Test : TestSuite {
 			"persistence=0.5",
 			"lacunarity=2",
 			"rotatey=1",
-			"radius=50"
+			"radius=50",
+			"width=50",
+			"height=50"
 		];
 		string argstring = join(args, "&");
 
