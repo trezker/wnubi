@@ -78,17 +78,16 @@ class GetMap: Action {
 		double lacunarity = req.query["lacunarity"].to!double;
 		double rotatey = req.query["rotatey"].to!double * PI / 180.0;
 		double radius = req.query["radius"].to!double;
-		writeln(rotatey);
 		int width = req.query["width"].to!int;
 		int height = req.query["height"].to!int;
 
-		writeln(width);
-		writeln(height);
-
-    	ubyte[] image;
-    	ubyte[] blank_pixel = [0, 0, 0, 0];
+		ubyte[] image;
+		ubyte[] blank_pixel = [0, 0, 0, 0];
 
 		double r = radius;
+
+		Perlin perlin = new Perlin(0);
+
 		for (int y = 0; y < height; y++) {
 			auto w = to!int(sqrt(to!float(r*r-(y-height/2)*(y-height/2))));
 			if(w > width/2)
@@ -118,7 +117,7 @@ class GetMap: Action {
 					double frequency = 1;
 					double c = 0;
 					for(int o = 0; o < octaves; o++) {
-						double perlinValue = PerlinNoise(scale*p.x*frequency+layer*0.5, scale*p.y*frequency, scale*p.z*frequency)*2-1;
+						double perlinValue = perlin.value(scale*p.x*frequency+layer*0.5, scale*p.y*frequency, scale*p.z*frequency)*2-1;
 						c += perlinValue * amplitude;
 
 						amplitude *= persistence;
