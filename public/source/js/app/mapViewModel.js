@@ -26,11 +26,8 @@ function getmap() {
 		"width": width,
 		"height": height
 	};
-
-//	var img = document.createElement("img");  // Create with DOM
-//	img.src = "http://dev.trezker.net/get?action=GetMap&perlinScale=0.5&octaves=8&persistence=0.5&lacunarity=2&rotatey="+rotatey+"&radius=50";
-//	$("body").append(img);
-	$("#mapimage").attr("src","http://dev.trezker.net/get?action=GetMap&perlinScale=0.5&octaves=8&persistence=0.5&lacunarity=2&rotatey="+rotatey+"&radius="+radius+"&width="+width+"&height="+height);
+	var params = $.param(data);
+	$("#mapimage").attr("src","http://dev.trezker.net/get?action=GetMap&" + params);
 }
 
 getmap();
