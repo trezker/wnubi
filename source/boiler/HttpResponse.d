@@ -4,6 +4,7 @@ class HttpResponse {
 	int code;
 	string content;
 	string content_type;
+	string[string] headers;
 	ubyte[] data;
 
 	void writeBody(string content, int code){

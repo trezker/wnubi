@@ -75,6 +75,11 @@ void RenderVibeHttpResponseFromRequestAndResponse(HTTPServerResponse viberespons
 	if(request.session) {
 		viberesponse.setCookie("session_id", request.session.id);
 	}
+
+	foreach (key, value; response.headers) {
+		viberesponse.headers[key] = value;
+	}
+
 	if(response.content_type) {
 		if(response.content) {
 			viberesponse.writeBody(response.content, response.content_type);

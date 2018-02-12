@@ -148,6 +148,7 @@ class GetMap: Action {
 
 		ubyte[] png = write_png_to_mem(width, height, image);
 		res.writeBody(png, "image/png");
+		res.headers["Cache-Control"] = "max-age=86400";
 		return res;
 	}
 }

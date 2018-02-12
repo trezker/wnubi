@@ -59,6 +59,7 @@ public:
 
 	void PerformGet(HTTPServerRequest req, HTTPServerResponse res) {
 		try {
+			//writeln(req);
 			HttpRequest request = CreateHttpRequestFromVibeHttpRequest(req, sessionstore);
 			HttpResponse response = get.Perform (request);
 			RenderVibeHttpResponseFromRequestAndResponse(res, request, response);

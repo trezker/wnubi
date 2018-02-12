@@ -28,7 +28,7 @@ function getmap() {
 	};
 	var params = $.param(data);
 	console.log(params);
-	$("#mapimage").attr("src","http://dev.trezker.net/get?" + params);
+	$("#mapimage").attr("src","/get?" + params);
 }
 
 getmap();
