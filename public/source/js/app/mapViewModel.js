@@ -6,12 +6,12 @@ var radius = 50;
 $("#mapimage").css("height", height);
 $("#mapimage").css("width", width);
 $("#mapimage").on("load", function() {
-	console.log("loaded");
+	//console.log("loaded");
 	setTimeout(getmap, 10);
 });
 
 function getmap() {
-	console.log("update");
+	//console.log("update");
 	rotatey++;
 	if(rotatey>360)
 		rotatey-=360;
@@ -21,13 +21,14 @@ function getmap() {
 		"octaves": 8,
 		"persistence": 0.5,
 		"lacunarity": 2,
-		"rotatey": 1,
+		"rotatey": rotatey,
 		"radius": radius,
 		"width": width,
 		"height": height
 	};
 	var params = $.param(data);
-	$("#mapimage").attr("src","http://dev.trezker.net/get?action=GetMap&" + params);
+	console.log(params);
+	$("#mapimage").attr("src","http://dev.trezker.net/get?" + params);
 }
 
 getmap();
