@@ -105,8 +105,8 @@ class GetMap: Action {
 				p.z = sqrt(1-sqrt(p.x*p.x+p.y*p.y));
 				if(isNaN(p.z)) {
 					p.z = 0;
-					//image ~= blank_pixel[0..3];
-					//continue;
+					image ~= blank_pixel[0..3];
+					continue;
 				}
 
 				rotateAroundAxis(p, Vector3d(0.0, 0.0, 0.0), Vector3d(0.0, 1.0, 0.0), rotatey);
