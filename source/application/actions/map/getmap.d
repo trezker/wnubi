@@ -76,6 +76,7 @@ class GetMap: Action {
 		int octaves = req.query["octaves"].to!int;
 		double persistence = req.query["persistence"].to!double;
 		double lacunarity = req.query["lacunarity"].to!double;
+		double rotatedegrees = req.query["rotatey"].to!double;
 		double rotatey = req.query["rotatey"].to!double * PI / 180.0;
 		double radius = req.query["radius"].to!double;
 		int width = req.query["width"].to!int;
@@ -109,7 +110,9 @@ class GetMap: Action {
 					continue;
 				}
 
+				p.normalize();
 				rotateAroundAxis(p, Vector3d(0.0, 0.0, 0.0), Vector3d(0.0, 1.0, 0.0), rotatey);
+				p.normalize();
 				int layer = 0;
 				
 				//for(layer = 0; layer<regions.length; layer++) 
@@ -135,6 +138,8 @@ class GetMap: Action {
 							break;
 						}
 					}*/
+					if(c>1)
+						c=1;
 					for(int region = 0; region<regions.length; region++) {
 						if(c < regions[region].height) {
 							color = regions[region].color;
@@ -142,10 +147,18 @@ class GetMap: Action {
 						}
 					}
 					image ~= color[0..3];
+					//ubyte g = to!ubyte(c*255);
+					//image ~= [g, g, g, 255][0..3];
 				}
 			}
 		}
-
+		string lead = "";
+		if(rotatedegrees<10)
+			lead = "00";
+		if(rotatedegrees<100)
+			lead = "0";
+		string filename = "map" ~ lead ~ to!string(rotatedegrees) ~ ".png";
+		write_png(filename, width, height, image);
 		ubyte[] png = write_png_to_mem(width, height, image);
 		res.writeBody(png, "image/png");
 		res.headers["Cache-Control"] = "max-age=86400";

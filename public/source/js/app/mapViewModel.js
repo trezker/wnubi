@@ -12,7 +12,7 @@ $("#mapimage").on("load", function() {
 
 function getmap() {
 	//console.log("update");
-	rotatey++;
+	rotatey+=2;
 	if(rotatey>360)
 		rotatey-=360;
 	var data = {
