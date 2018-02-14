@@ -69,6 +69,13 @@ Region[] regions = [
 	}
 ];
 
+/*
+	40km is a half day at walking speed 5km/h * 8 hours.
+	Full map width visible to player is 80km.
+	Planet radius 4000km (between earth 6,371 and mars 3,390)
+	Render radius 50px*100 = 5000
+*/
+
 class GetMap: Action {
 	HttpResponse Perform(HttpRequest req) {
 		HttpResponse res = new HttpResponse;
@@ -152,6 +159,7 @@ class GetMap: Action {
 				}
 			}
 		}
+		/*
 		string lead = "";
 		if(rotatedegrees<10)
 			lead = "00";
@@ -159,6 +167,7 @@ class GetMap: Action {
 			lead = "0";
 		string filename = "map" ~ lead ~ to!string(rotatedegrees) ~ ".png";
 		write_png(filename, width, height, image);
+*/
 		ubyte[] png = write_png_to_mem(width, height, image);
 		res.writeBody(png, "image/png");
 		res.headers["Cache-Control"] = "max-age=86400";

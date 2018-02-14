@@ -3,16 +3,30 @@ var height = 100;
 var width = 100;
 var radius = 50;
 
+var imagesloaded = 0;
+
+function imgload() {
+	imagesloaded++;
+	if(imagesloaded == 3) {
+		imagesloaded = 0;
+		setTimeout(getmap, 100);
+	}
+}
+
 $("#mapimage").css("height", height);
 $("#mapimage").css("width", width);
-$("#mapimage").on("load", function() {
-	//console.log("loaded");
-	setTimeout(getmap, 10);
-});
+$("#mapimage2").css("height", height);
+$("#mapimage2").css("width", width);
+$("#mapimage3").css("height", height);
+$("#mapimage3").css("width", width);
+
+$("#mapimage").on("load", imgload);
+$("#mapimage2").on("load", imgload);
+$("#mapimage3").on("load", imgload);
 
 function getmap() {
 	//console.log("update");
-	rotatey+=2;
+	rotatey+=0.1;
 	if(rotatey>360)
 		rotatey-=360;
 	var data = {
@@ -27,8 +41,14 @@ function getmap() {
 		"height": height
 	};
 	var params = $.param(data);
+	data.radius = radius*10;
+	var params2 = $.param(data);
+	data.radius = radius*100;
+	var params3 = $.param(data);
 	console.log(params);
 	$("#mapimage").attr("src","/get?" + params);
+	$("#mapimage2").attr("src","/get?" + params2);
+	$("#mapimage3").attr("src","/get?" + params3);
 }
 
 getmap();
