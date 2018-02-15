@@ -4,6 +4,7 @@ import std.math;
 import std.conv;
 import std.stdio;
 import std.random;
+import dlib.math;
 
 class Perlin {
 	int[] p;
@@ -38,14 +39,45 @@ class Perlin {
 		int BB = p[B+1]+Z;      // THE 8 CUBE CORNERS,
 
 		return scale(
-			lerp(w, lerp(v, lerp(u, grad(p[AA  ], x  , y  , z   ),  // AND ADD
-			grad(p[BA  ], x-1, y  , z   )), // BLENDED
-			lerp(u, grad(p[AB  ], x  , y-1, z   ),  // RESULTS
-			grad(p[BB  ], x-1, y-1, z   ))),// FROM  8
-			lerp(v, lerp(u, grad(p[AA+1], x  , y  , z-1 ),  // CORNERS
-			grad(p[BA+1], x-1, y  , z-1 )), // OF CUBE
-			lerp(u, grad(p[AB+1], x  , y-1, z-1 ),
-			grad(p[BB+1], x-1, y-1, z-1 )))));
+			plerp(
+				w, plerp(
+					v, plerp(
+						u, grad(
+							p[AA], x  , y  , z
+						),  // AND ADD
+						grad(
+							p[BA], x-1, y  , z
+						)
+					), // BLENDED
+					plerp(
+						u, grad(
+							p[AB], x , y-1, z
+						),  // RESULTS
+						grad(
+							p[BB], x-1, y-1, z
+						)
+					)
+				),// FROM  8
+				plerp(
+					v, plerp(
+						u, grad(
+							p[AA+1], x  , y  , z-1
+						),  // CORNERS
+						grad(
+							p[BA+1], x-1, y, z-1
+						)
+					), // OF CUBE
+					plerp(
+						u, grad(
+							p[AB+1], x, y-1, z-1
+						),
+						grad(
+							p[BB+1], x-1, y-1, z-1
+						)
+					)
+				)
+			)
+		);
 	}
 }
 
@@ -53,7 +85,7 @@ double fade(double t) {
 	return t * t * t * (t * (t * 6 - 15) + 10);
 }
 
-double lerp(double t, double a, double b) {
+double plerp(double t, double a, double b) {
 	return a + t * (b - a);
 }
 

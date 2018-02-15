@@ -29,7 +29,7 @@ struct Region {
 Region[] regions = [
 	{
 		name: "Water deep",
-		height: 0.3,
+		height: 0.0,
 		color: [0x00,0x00,0xaa,0xff]
 	},
 	{
@@ -39,17 +39,17 @@ Region[] regions = [
 	},
 	{
 		name: "Sand",
-		height: 0.45,
+		height: 0.41,
 		color: [0xe3,0xae,0x0b,0xff]
 	},
 	{
 		name: "Grass",
-		height: 0.55,
+		height: 0.42,
 		color: [0x48,0xcb,0x48,0xff]
 	},
 	{
 		name: "Grass 2",
-		height: 0.6,
+		height: 0.69,
 		color: [0x26,0xa6,0x26,0xff]
 	},
 	{
@@ -95,6 +95,7 @@ class GetMap: Action {
 		double r = radius;
 
 		Perlin perlin = new Perlin(0);
+		bool debugline = false;
 
 		for (int y = 0; y < height; y++) {
 			auto w = to!int(sqrt(to!float(r*r-(y-height/2)*(y-height/2))));
@@ -138,18 +139,20 @@ class GetMap: Action {
 
 					c = (c+1)/2;
 					ubyte[] color = [0x00,0x00,0xaa,0xff];
-/*
-					for(int region = 0; region<regions[layer].length; region++) {
-						if(c < regions[layer][region].height) {
-							color = regions[layer][region].color;
-							break;
-						}
-					}*/
+					
 					if(c>1)
 						c=1;
+					if(c<0)
+						c=0;
 					for(int region = 0; region<regions.length; region++) {
 						if(c < regions[region].height) {
-							color = regions[region].color;
+							double t = (c-regions[region-1].height) / (regions[region].height - regions[region-1].height);
+							color = [
+								to!ubyte(lerp!double(regions[region-1].color[0], regions[region].color[0], t)),
+								to!ubyte(lerp!double(regions[region-1].color[1], regions[region].color[1], t)),
+								to!ubyte(lerp!double(regions[region-1].color[2], regions[region].color[2], t)),
+								0xff
+							];
 							break;
 						}
 					}
