@@ -1,4 +1,5 @@
 var rotatey = 0;
+var rotatex = 0;
 var height = 100;
 var width = 100;
 var radius = 50;
@@ -24,11 +25,19 @@ $("#mapimage").on("load", imgload);
 $("#mapimage2").on("load", imgload);
 $("#mapimage3").on("load", imgload);
 
+var xdir = -.5;
+
 function getmap() {
 	//console.log("update");
-	rotatey+=0.1;
+	rotatey+=0.5;
 	if(rotatey>360)
 		rotatey-=360;
+	
+	rotatex += xdir;
+	if(rotatex>=90 || rotatex<=-90) {
+		xdir = -xdir;
+	}
+
 	var data = {
 		"action": "GetMap",
 		"perlinScale": 0.5,
@@ -36,6 +45,7 @@ function getmap() {
 		"persistence": 0.5,
 		"lacunarity": 2,
 		"rotatey": rotatey,
+		"rotatex": rotatex,
 		"radius": radius,
 		"width": width,
 		"height": height

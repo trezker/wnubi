@@ -85,6 +85,7 @@ class GetMap: Action {
 		double lacunarity = req.query["lacunarity"].to!double;
 		double rotatedegrees = req.query["rotatey"].to!double;
 		double rotatey = req.query["rotatey"].to!double * PI / 180.0;
+		double rotatex = req.query["rotatex"].to!double * PI / 180.0;
 		double radius = req.query["radius"].to!double;
 		int width = req.query["width"].to!int;
 		int height = req.query["height"].to!int;
@@ -120,6 +121,8 @@ class GetMap: Action {
 
 				p.normalize();
 				rotateAroundAxis(p, Vector3d(0.0, 0.0, 0.0), Vector3d(0.0, 1.0, 0.0), rotatey);
+				p.normalize();
+				rotateAroundAxis(p, Vector3d(0.0, 0.0, 0.0), Vector3d(1.0, 0.0, 0.0), rotatex);
 				p.normalize();
 				int layer = 0;
 				
