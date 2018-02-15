@@ -31,53 +31,39 @@ class Perlin {
 		double v = fade(y);                                // FOR EACH OF X,Y,Z.
 		double w = fade(z);
 
+		// HASH COORDINATES OF THE 8 CUBE CORNERS,
+		// AND ADD BLENDED RESULTS FROM 8 CORNERS OF CUBE
 		int A = p[X]+Y;
 		int AA = p[A]+Z;
-		int AB = p[A+1]+Z;      // HASH COORDINATES OF
+		int AB = p[A+1]+Z;
 		int B = p[X+1]+Y;
 		int BA = p[B]+Z;
-		int BB = p[B+1]+Z;      // THE 8 CUBE CORNERS,
+		int BB = p[B+1]+Z;
 
 		return scale(
 			lerp(
 				lerp(
 					lerp(
-						grad(
-							p[AA], x  , y  , z
-						),  // AND ADD
-						grad(
-							p[BA], x-1, y  , z
-						),
+						grad(p[AA], x, y, z),
+						grad(p[BA], x-1, y, z),
 						u
-					), // BLENDED
+					),
 					lerp(
-						grad(
-							p[AB], x , y-1, z
-						),  // RESULTS
-						grad(
-							p[BB], x-1, y-1, z
-						),
+						grad(p[AB], x, y-1, z),
+						grad(p[BB], x-1, y-1, z),
 						u
 					),
 					v
-				),// FROM  8
+				),
 				lerp(
 					lerp(
-						grad(
-							p[AA+1], x  , y  , z-1
-						),  // CORNERS
-						grad(
-							p[BA+1], x-1, y, z-1
-						),
+						grad(p[AA+1], x, y, z-1),
+						grad(p[BA+1], x-1, y, z-1),
 						u
-					), // OF CUBE
+					),
 					lerp(
-						grad(
-							p[AB+1], x, y-1, z-1
-						),
-						grad(
-							p[BB+1], x-1, y-1, z-1
-						),
+						grad(p[AB+1], x, y-1, z-1),
+						grad(p[BB+1], x-1, y-1, z-1),
 						u
 					),
 					v
