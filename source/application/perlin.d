@@ -39,43 +39,50 @@ class Perlin {
 		int BB = p[B+1]+Z;      // THE 8 CUBE CORNERS,
 
 		return scale(
-			plerp(
-				w, plerp(
-					v, plerp(
-						u, grad(
+			lerp(
+				lerp(
+					lerp(
+						grad(
 							p[AA], x  , y  , z
 						),  // AND ADD
 						grad(
 							p[BA], x-1, y  , z
-						)
+						),
+						u
 					), // BLENDED
-					plerp(
-						u, grad(
+					lerp(
+						grad(
 							p[AB], x , y-1, z
 						),  // RESULTS
 						grad(
 							p[BB], x-1, y-1, z
-						)
-					)
+						),
+						u
+					),
+					v
 				),// FROM  8
-				plerp(
-					v, plerp(
-						u, grad(
+				lerp(
+					lerp(
+						grad(
 							p[AA+1], x  , y  , z-1
 						),  // CORNERS
 						grad(
 							p[BA+1], x-1, y, z-1
-						)
+						),
+						u
 					), // OF CUBE
-					plerp(
-						u, grad(
+					lerp(
+						grad(
 							p[AB+1], x, y-1, z-1
 						),
 						grad(
 							p[BB+1], x-1, y-1, z-1
-						)
-					)
-				)
+						),
+						u
+					),
+					v
+				),
+				w
 			)
 		);
 	}
@@ -83,10 +90,6 @@ class Perlin {
 
 double fade(double t) {
 	return t * t * t * (t * (t * 6 - 15) + 10);
-}
-
-double plerp(double t, double a, double b) {
-	return a + t * (b - a);
 }
 
 double grad(int hash, double x, double y, double z) {
