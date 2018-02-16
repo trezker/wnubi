@@ -11,11 +11,38 @@
 <body>
 	<div class="maingrid">
 		<div>
-			<img id="mapimage" />
-			<img id="mapimage2" />
-			<img id="mapimage3" />
-			<div style="position: absolute; top: 45px; left: 45px; width: 10px; height: 10px; border: 1px solid black;"></div>
-			<div style="position: absolute; top: 45px; left: 149px; width: 10px; height: 10px; border: 1px solid black;"></div>
+			<div>
+				<img id="mapimage" />
+				<img id="mapimage2" />
+				<img id="mapimage3" />
+				<div style="position: absolute; top: 45px; left: 45px; width: 10px; height: 10px; border: 1px solid black;"></div>
+				<div style="position: absolute; top: 45px; left: 149px; width: 10px; height: 10px; border: 1px solid black;"></div>
+			</div>
+			<div>
+				<div class="form-group">
+					<label class="control-label">Seed</label>
+					<input type="text" class="form-control" data-bind="value: mapParameters.seed" />
+				</div>
+				<div class="form-group">
+					<label class="control-label">Perlin scale</label>
+					<input type="text" class="form-control" data-bind="value: mapParameters.perlinScale" />
+				</div>
+				<div class="form-group">
+					<label class="control-label">Octaves</label>
+					<input type="text" class="form-control" data-bind="value: mapParameters.octaves" />
+				</div>
+				<div class="form-group">
+					<label class="control-label">Persistence</label>
+					<input type="text" class="form-control" data-bind="value: mapParameters.persistence" />
+				</div>
+				<div class="form-group">
+					<label class="control-label">Lacunarity</label>
+					<input type="text" class="form-control" data-bind="value: mapParameters.lacunarity" />
+				</div>
+				<div class="form-group">
+					<button data-bind="click: CreateMap" class="btn btn-primary">Create map</button>
+				</div>
+			</div>
 		</div>
 	</div>
 

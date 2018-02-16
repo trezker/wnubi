@@ -1,3 +1,32 @@
+var MapViewmodel = function() {
+	var self = this;
+
+	self.defaultMapParameters = {
+		seed: 1,
+		perlinScale: 0.5,
+		octaves: 8,
+		persistence: 0.5,
+		lacunarity: 2
+	};
+
+	self.map = null;
+	self.canvas = null;
+	self.mapParameters = ko.mapping.fromJS(self.defaultMapParameters);
+
+	self.CreateMap = function() {
+		self.map = ko.mapping.toJS(self.mapParameters);
+	};
+/*
+	self.change = ko.computed(function () {
+		ko.toJS(root);
+	};*/
+};
+
+var mapViewmodel = new MapViewmodel();
+ko.applyBindings(mapViewmodel);
+
+mapViewmodel.CreateMap();
+
 var rotatey = 0;
 var rotatex = 0;
 var height = 100;
@@ -38,12 +67,14 @@ function getmap() {
 		xdir = -xdir;
 	}
 
+	var vmvars = ko.mapping.toJS(mapViewmodel.mapParameters);
+
 	var data = {
 		"action": "GetMap",
-		"perlinScale": 0.5,
-		"octaves": 8,
-		"persistence": 0.5,
-		"lacunarity": 2,
+		"perlinScale": vmvars.perlinScale,
+		"octaves": vmvars.octaves,
+		"persistence": vmvars.persistence,
+		"lacunarity": vmvars.lacunarity,
 		"rotatey": rotatey,
 		"rotatex": rotatex,
 		"radius": radius,
