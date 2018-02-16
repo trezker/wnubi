@@ -2,11 +2,11 @@ var MapViewmodel = function() {
 	var self = this;
 
 	self.defaultMapParameters = {
-		seed: 1,
+		seed: 5,
 		perlinScale: 0.5,
 		octaves: 8,
-		persistence: 0.5,
-		lacunarity: 2
+		persistence: 0.6,
+		lacunarity: 2.5
 	};
 
 	self.map = null;
@@ -58,19 +58,20 @@ var xdir = -.5;
 
 function getmap() {
 	//console.log("update");
-	rotatey+=0.5;
+	rotatey+=4;
 	if(rotatey>360)
 		rotatey-=360;
-	
+	/*
 	rotatex += xdir;
 	if(rotatex>=90 || rotatex<=-90) {
 		xdir = -xdir;
 	}
-
+*/
 	var vmvars = ko.mapping.toJS(mapViewmodel.mapParameters);
 
 	var data = {
 		"action": "GetMap",
+		"seed": vmvars.seed,
 		"perlinScale": vmvars.perlinScale,
 		"octaves": vmvars.octaves,
 		"persistence": vmvars.persistence,

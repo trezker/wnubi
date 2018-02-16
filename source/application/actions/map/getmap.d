@@ -34,27 +34,27 @@ Region[] regions = [
 	},
 	{
 		name: "Water shallow",
-		height: 0.4,
+		height: 0.5,
 		color: [0x00,0x00,0xff,0xff]
 	},
 	{
 		name: "Sand",
-		height: 0.41,
+		height: 0.51,
 		color: [0xe3,0xae,0x0b,0xff]
 	},
 	{
 		name: "Grass",
-		height: 0.42,
+		height: 0.52,
 		color: [0x48,0xcb,0x48,0xff]
 	},
 	{
 		name: "Grass 2",
-		height: 0.69,
+		height: 0.79,
 		color: [0x26,0xa6,0x26,0xff]
 	},
 	{
 		name: "Rock",
-		height: 0.7,
+		height: 0.8,
 		color: [0x74,0x64,0x44,0xff]
 	},
 	{
@@ -79,6 +79,7 @@ Region[] regions = [
 class GetMap: Action {
 	HttpResponse Perform(HttpRequest req) {
 		HttpResponse res = new HttpResponse;
+		int seed = req.query["seed"].to!int;
 		double perlinScale = req.query["perlinScale"].to!double;
 		int octaves = req.query["octaves"].to!int;
 		double persistence = req.query["persistence"].to!double;
@@ -95,7 +96,7 @@ class GetMap: Action {
 
 		double r = radius;
 
-		Perlin perlin = new Perlin(0);
+		Perlin perlin = new Perlin(seed);
 		bool debugline = false;
 
 		for (int y = 0; y < height; y++) {
