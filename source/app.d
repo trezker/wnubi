@@ -6,6 +6,9 @@ import vibe.core.log;
 import vibe.http.router;
 import vibe.http.fileserver;
 import vibe.http.websockets : handleWebSockets;
+import std.file;
+import std.json;
+import std.conv;
 
 import boiler.server;
 
@@ -20,9 +23,16 @@ shared static this() {
 	runTask({
 		server.Daemon();
 	});
+
+	ushort port = 8080;
+	if(exists("config.json")) {
+		string json = readText("config.json");
+		JSONValue[string] document = parseJSON(json).object;
+		port = to!ushort(document["port"].integer);
+	}
 	
 	auto settings = new HTTPServerSettings;
-	settings.port = 8080;
+	settings.port = port;
 	settings.bindAddresses = ["::1", "127.0.0.1"];
 	settings.errorPageHandler = toDelegate(&server.Error);
 	settings.sessionStore = new MemorySessionStore;
