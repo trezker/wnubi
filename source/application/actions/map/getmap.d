@@ -206,11 +206,13 @@ class Test : TestSuite {
 	void GetMap_with_specific_parameters_should_succeed() {
 		string[] args = [
 			"action=test",
+			"seed=1",
 			"perlinScale=1",
 			"octaves=4",
 			"persistence=0.5",
 			"lacunarity=2",
 			"rotatey=1",
+			"rotatex=1",
 			"radius=50",
 			"width=50",
 			"height=50"
