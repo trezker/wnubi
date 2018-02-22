@@ -65,8 +65,7 @@ class World_storage {
 	}
 
 	World[] List() {
-		auto conditions = Bson();
-		return MongoArray!(World)(collection, conditions);
+		return MongoArray!(World)(collection);
 	}
 }
 
@@ -79,7 +78,7 @@ class Test : TestSuite {
 		world_storage = new World_storage(database);
 		
 		AddTest(&Create_world);
-		//AddTest(&Find_by_id);
+		AddTest(&Find_by_id);
 	}
 
 	override void Setup() {

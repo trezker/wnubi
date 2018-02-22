@@ -31,5 +31,9 @@ MemoryStream createInputStreamFromString(string input) {
 }
 
 T[] MongoArray(T)(MongoCollection collection, Bson conditions) {
-    return collection.find(conditions).map!(doc => deserialize!(BsonSerializer, T)(doc)).array; 
+	return collection.find(conditions).map!(doc => deserialize!(BsonSerializer, T)(doc)).array; 
+}
+
+T[] MongoArray(T)(MongoCollection collection) {
+	return collection.find().map!(doc => deserialize!(BsonSerializer, T)(doc)).array; 
 }
