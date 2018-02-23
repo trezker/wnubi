@@ -112,12 +112,10 @@ class Test : TestSuite {
 		world_storage.Create(world);
 		auto obj = world_storage.List();
 		//Testing how to pass around id as string and then using it against mongo.
-		/*
-		BsonObjectID oid = obj["_id"].get!BsonObjectID;
+		BsonObjectID oid = obj[0]._id;
 		string sid = oid.toString();
 		auto objid = world_storage.ById(sid);
-		assertEqual(objid["username"].get!string, username);
-*/
+		assertEqual(objid["seed"].get!int, 1);
 	}
 }
 
