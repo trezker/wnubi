@@ -11,21 +11,26 @@ import boiler.HttpRequest;
 
 import application.Database;
 import application.storage.user;
+import application.storage.world;
 import application.CreateUser;
 import application.Login;
 import application.Logout;
 import application.CurrentUser;
 import application.GetMap;
+import application.CreateWorld;
 
 class Application {
 	void SetupActions(Ajax ajax, Get get) {
 		Database database = GetDatabase(null);
 		auto userStorage = new User_storage(database);
+		auto worldStorage = new World_storage(database);
 
 		ajax.SetActionCreator("CreateUser", () => new CreateUser(userStorage));
 		ajax.SetActionCreator("Login", () => new Login(userStorage));
 		ajax.SetActionCreator("Logout", () => new Logout);
 		ajax.SetActionCreator("CurrentUser", () => new CurrentUser(userStorage));
+
+		ajax.SetActionCreator("CreateWorld", () => new CreateWorld(worldStorage));
 
 		get.SetActionCreator("GetMap", () => new GetMap);
 	}
