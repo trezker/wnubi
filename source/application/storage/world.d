@@ -57,6 +57,20 @@ class World_storage {
 		}
 	}
 
+	void Update(World world) {
+		auto selector = Bson(["_id": Bson(world._id)]);
+		auto update = Bson([
+			"$set": Bson([
+				"seed": Bson(world.seed),
+				"perlinScale": Bson(world.perlinScale),
+				"octaves": Bson(world.octaves),
+				"persistence": Bson(world.persistence),
+				"lacunarity": Bson(world.lacunarity)
+			])
+		]);
+		collection.update(selector, update);
+	}
+
 	Bson ById(string id) {
 		BsonObjectID oid = BsonObjectID.fromString(id);
 		auto conditions = Bson(["_id": Bson(oid)]);
@@ -79,6 +93,7 @@ class Test : TestSuite {
 		
 		AddTest(&Create_world);
 		AddTest(&Find_by_id);
+		AddTest(&Update_should_work);
 	}
 
 	override void Setup() {
@@ -111,11 +126,29 @@ class Test : TestSuite {
 
 		world_storage.Create(world);
 		auto obj = world_storage.List();
-		//Testing how to pass around id as string and then using it against mongo.
 		BsonObjectID oid = obj[0]._id;
 		string sid = oid.toString();
 		auto objid = world_storage.ById(sid);
 		assertEqual(objid["seed"].get!int, 1);
+	}
+
+	void Update_should_work() {
+		NewWorld world = {
+			seed: 1,
+			perlinScale: 1.0,
+			octaves: 1,
+			persistence: 1.0,
+			lacunarity: 1.0
+		};
+
+		world_storage.Create(world);
+		auto obj = world_storage.List();
+		obj[0].seed = 2;
+		world_storage.Update(obj[0]);
+
+
+		auto obj2 = world_storage.List();
+		assertEqual(obj2[0].seed, 2);
 	}
 }
 
