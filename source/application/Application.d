@@ -18,6 +18,8 @@ import application.Logout;
 import application.CurrentUser;
 import application.GetMap;
 import application.CreateWorld;
+import application.UpdateWorld;
+import application.ListWorlds;
 
 class Application {
 	void SetupActions(Ajax ajax, Get get) {
@@ -31,6 +33,8 @@ class Application {
 		ajax.SetActionCreator("CurrentUser", () => new CurrentUser(userStorage));
 
 		ajax.SetActionCreator("CreateWorld", () => new CreateWorld(worldStorage));
+		ajax.SetActionCreator("UpdateWorld", () => new UpdateWorld(worldStorage));
+		ajax.SetActionCreator("ListWorlds", () => new ListWorlds(worldStorage));
 
 		get.SetActionCreator("GetMap", () => new GetMap);
 	}
