@@ -1,6 +1,8 @@
 var MapViewmodel = function() {
 	var self = this;
 
+	self.worlds = ko.observableArray();
+
 	self.defaultMapParameters = {
 		seed: 5,
 		perlinScale: 0.5,
@@ -12,26 +14,38 @@ var MapViewmodel = function() {
 	self.canvas = null;
 	self.mapParameters = ko.mapping.fromJS(self.defaultMapParameters);
 
+	self.LoadWorlds = function() {
+		var data = {
+			action: "ListWorlds"
+		};
+		ajax_post(data).done(function(returnedData) {
+			console.log(returnedData);
+			if(returnedData.success == true) {
+				self.worlds(returnedData.worlds);
+			}
+		});
+	};
+
+	self.SelectWorld = function(item) {
+		ko.mapping.fromJS(self.mapParameters, item);
+	};
+
 	self.CreateMap = function() {
 		var data = ko.toJS(self.mapParameters);
 		data.action = "CreateWorld";
 		ajax_post(data).done(function(returnedData) {
 			console.log(returnedData);
 			if(returnedData == true) {
-				
+				self.LoadWorlds();
 			}
 		});
 	};
-/*
-	self.change = ko.computed(function () {
-		ko.toJS(root);
-	};*/
 };
 
 var mapViewmodel = new MapViewmodel();
 ko.applyBindings(mapViewmodel);
 
-mapViewmodel.CreateMap();
+mapViewmodel.LoadWorlds();
 
 var rotatey = 0;
 var rotatex = 0;
@@ -93,7 +107,6 @@ function getmap() {
 	var params2 = $.param(data);
 	data.radius = radius*100;
 	var params3 = $.param(data);
-	console.log(params);
 	$("#mapimage").attr("src","/get?" + params);
 	$("#mapimage2").attr("src","/get?" + params2);
 	$("#mapimage3").attr("src","/get?" + params3);
