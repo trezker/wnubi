@@ -9,12 +9,18 @@ var MapViewmodel = function() {
 		lacunarity: 2.5
 	};
 
-	self.map = null;
 	self.canvas = null;
 	self.mapParameters = ko.mapping.fromJS(self.defaultMapParameters);
 
 	self.CreateMap = function() {
-		self.map = ko.mapping.toJS(self.mapParameters);
+		var data = ko.toJS(self.mapParameters);
+		data.action = "CreateWorld";
+		ajax_post(data).done(function(returnedData) {
+			console.log(returnedData);
+			if(returnedData == true) {
+				
+			}
+		});
 	};
 /*
 	self.change = ko.computed(function () {
