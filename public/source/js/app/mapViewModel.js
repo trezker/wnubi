@@ -27,12 +27,17 @@ var MapViewmodel = function() {
 	};
 
 	self.SelectWorld = function(item) {
-		ko.mapping.fromJS(self.mapParameters, item);
+		ko.mapping.fromJS(item, self.mapParameters);
 	};
 
 	self.CreateMap = function() {
-		var data = ko.toJS(self.mapParameters);
+		var data = ko.mapping.toJS(self.mapParameters);
 		data.action = "CreateWorld";
+		data.seed = parseFloat(data.seed);
+		data.perlinScale = parseFloat(data.perlinScale);
+		data.octaves = parseFloat(data.octaves);
+		data.persistence = parseFloat(data.persistence);
+		data.lacunarity = parseFloat(data.lacunarity);
 		ajax_post(data).done(function(returnedData) {
 			console.log(returnedData);
 			if(returnedData == true) {
@@ -59,7 +64,7 @@ function imgload() {
 	imagesloaded++;
 	if(imagesloaded == 3) {
 		imagesloaded = 0;
-		setTimeout(getmap, 100);
+		//setTimeout(getmap, 100);
 	}
 }
 
