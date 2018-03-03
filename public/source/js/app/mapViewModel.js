@@ -2,6 +2,8 @@ var MapViewmodel = function() {
 	var self = this;
 
 	self.autorotate = ko.observable(true);
+	self.rotatey = ko.observable(0);
+	self.rotatex = ko.observable(0);
 
 	self.worlds = ko.observableArray();
 
@@ -72,8 +74,6 @@ ko.applyBindings(mapViewmodel);
 
 mapViewmodel.LoadWorlds();
 
-var rotatey = 0;
-var rotatex = 0;
 var height = 100;
 var width = 100;
 var radius = 50;
@@ -102,11 +102,13 @@ $("#mapimage3").on("load", imgload);
 var xdir = -.5;
 
 function getmap() {
-	//console.log("update");
+	var rotatey = mapViewmodel.rotatey();
+	var rotatex = mapViewmodel.rotatex();
 	if(mapViewmodel.autorotate()) {
 		rotatey+=4;
 		if(rotatey>360)
 			rotatey-=360;
+		mapViewmodel.rotatey(rotatey);
 	}
 	/*
 	rotatex += xdir;
@@ -114,6 +116,8 @@ function getmap() {
 		xdir = -xdir;
 	}
 */
+
+
 	var vmvars = ko.mapping.toJS(mapViewmodel.mapParameters);
 
 	var data = {

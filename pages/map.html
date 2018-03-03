@@ -19,10 +19,24 @@
 				<div style="position: absolute; top: 45px; left: 149px; width: 10px; height: 10px; border: 1px solid black;"></div>
 			</div>
 			<div style="width: 200px; float: left;">
-				<div class="form-group">
-					<label class="control-label">Rotate</label>
-					<input type="checkbox" class="form-control" data-bind="checked: autorotate" />
-				</div>
+				<label class="control-label">Rotate</label>
+				<form class="form-inline">
+					<div class="form-group">
+	  					<input type="checkbox" class="form-control" data-bind="checked: autorotate" />
+					</div>
+					<div class="form-group" style="width: 6em">
+						<div class="input-group">
+							<span class="input-group-addon">Y</span>
+							<input type="text" class="form-control" style="width: 100%" data-bind="value: rotatey" />
+						</div>
+					</div>
+					<div class="form-group" style="width: 6em">
+						<div class="input-group">
+							<span class="input-group-addon">X</span>
+							<input type="text" class="form-control" style="width: 100%" data-bind="value: rotatex" />
+						</div>
+					</div>
+				</form>
 				<div class="form-group">
 					<label class="control-label">Name</label>
 					<input type="text" class="form-control" data-bind="value: mapParameters.name" />
