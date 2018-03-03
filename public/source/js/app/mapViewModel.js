@@ -4,6 +4,7 @@ var MapViewmodel = function() {
 	self.worlds = ko.observableArray();
 
 	self.defaultMapParameters = {
+		name: "",
 		seed: 5,
 		perlinScale: 0.5,
 		octaves: 8,

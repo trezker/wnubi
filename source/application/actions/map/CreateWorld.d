@@ -72,6 +72,7 @@ class Test : TestSuite {
 	void Create_world_with_parameters_should_succeed() {
 		CreateWorld m = new CreateWorld(new World_storage(database));
 		Json jsoninput = Json.emptyObject;
+		jsoninput["name"] = "A";
 		jsoninput["seed"] = 0;
 		jsoninput["perlinScale"] = 1.0;
 		jsoninput["octaves"] = 1;

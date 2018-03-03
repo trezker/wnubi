@@ -14,6 +14,7 @@ import application.Database;
 
 struct NewWorld {
 	int seed;
+	string name;
 	double perlinScale;
 	int octaves;
 	double persistence;
@@ -22,6 +23,7 @@ struct NewWorld {
 
 struct World {
 	BsonObjectID _id;
+	string name;
 	int seed;
 	double perlinScale;
 	int octaves;
@@ -41,6 +43,7 @@ class World_storage {
 		try {
 			collection.insert(
 				Bson([
+					"name": Bson(world.name),
 					"seed": Bson(world.seed),
 					"perlinScale": Bson(world.perlinScale),
 					"octaves": Bson(world.octaves),
@@ -61,6 +64,7 @@ class World_storage {
 		auto selector = Bson(["_id": Bson(world._id)]);
 		auto update = Bson([
 			"$set": Bson([
+				"name": Bson(world.name),
 				"seed": Bson(world.seed),
 				"perlinScale": Bson(world.perlinScale),
 				"octaves": Bson(world.octaves),
@@ -105,6 +109,7 @@ class Test : TestSuite {
 
 	void Create_world() {
 		NewWorld world = {
+			name: "A",
 			seed: 1,
 			perlinScale: 1.0,
 			octaves: 1,
@@ -117,6 +122,7 @@ class Test : TestSuite {
 
 	void Find_by_id() {
 		NewWorld world = {
+			name: "A",
 			seed: 1,
 			perlinScale: 1.0,
 			octaves: 1,
@@ -134,6 +140,7 @@ class Test : TestSuite {
 
 	void Update_should_work() {
 		NewWorld world = {
+			name: "A",
 			seed: 1,
 			perlinScale: 1.0,
 			octaves: 1,

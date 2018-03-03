@@ -73,6 +73,7 @@ class Test : TestSuite {
 		auto world_storage = new World_storage(database);
 
 		NewWorld world = {
+			name: "A",
 			seed: 1,
 			perlinScale: 1.0,
 			octaves: 1,
@@ -88,6 +89,7 @@ class Test : TestSuite {
 		UpdateWorld m = new UpdateWorld(world_storage);
 		Json jsoninput = Json.emptyObject;
 		jsoninput["_id"] = sid;
+		jsoninput["name"] = "A";
 		jsoninput["seed"] = 0;
 		jsoninput["perlinScale"] = 1.0;
 		jsoninput["octaves"] = 1;
