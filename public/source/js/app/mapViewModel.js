@@ -4,6 +4,7 @@ var MapViewmodel = function() {
 	self.worlds = ko.observableArray();
 
 	self.defaultMapParameters = {
+		_id: "",
 		name: "",
 		seed: 5,
 		perlinScale: 0.5,
@@ -41,7 +42,23 @@ var MapViewmodel = function() {
 		data.lacunarity = parseFloat(data.lacunarity);
 		ajax_post(data).done(function(returnedData) {
 			console.log(returnedData);
-			if(returnedData == true) {
+			if(returnedData.success == true) {
+				self.LoadWorlds();
+			}
+		});
+	};
+
+	self.UpdateMap = function() {
+		var data = ko.mapping.toJS(self.mapParameters);
+		data.action = "UpdateWorld";
+		data.seed = parseFloat(data.seed);
+		data.perlinScale = parseFloat(data.perlinScale);
+		data.octaves = parseFloat(data.octaves);
+		data.persistence = parseFloat(data.persistence);
+		data.lacunarity = parseFloat(data.lacunarity);
+		ajax_post(data).done(function(returnedData) {
+			console.log(returnedData);
+			if(returnedData.success == true) {
 				self.LoadWorlds();
 			}
 		});
