@@ -1,6 +1,8 @@
 var MapViewmodel = function() {
 	var self = this;
 
+	self.autorotate = ko.observable(true);
+
 	self.worlds = ko.observableArray();
 
 	self.defaultMapParameters = {
@@ -82,7 +84,7 @@ function imgload() {
 	imagesloaded++;
 	if(imagesloaded == 3) {
 		imagesloaded = 0;
-		//setTimeout(getmap, 100);
+		setTimeout(getmap, 100);
 	}
 }
 
@@ -101,9 +103,11 @@ var xdir = -.5;
 
 function getmap() {
 	//console.log("update");
-	rotatey+=4;
-	if(rotatey>360)
-		rotatey-=360;
+	if(mapViewmodel.autorotate()) {
+		rotatey+=4;
+		if(rotatey>360)
+			rotatey-=360;
+	}
 	/*
 	rotatex += xdir;
 	if(rotatex>=90 || rotatex<=-90) {
