@@ -1,7 +1,7 @@
 var MapViewmodel = function() {
 	var self = this;
 
-	self.autorotate = ko.observable(true);
+	self.autorotate = ko.observable(false);
 	self.rotatey = ko.observable(0);
 	self.rotatex = ko.observable(0);
 
@@ -67,6 +67,20 @@ var MapViewmodel = function() {
 			}
 		});
 	};
+
+	self.DeleteWorld = function(item) {
+		console.log(item);
+		var data = {
+			action: "DeleteWorld",
+			worldId: item._id
+		};
+		ajax_post(data).done(function(returnedData) {
+			console.log(returnedData);
+			if(returnedData.success == true) {
+				self.LoadWorlds();
+			}
+		});
+	}
 };
 
 var mapViewmodel = new MapViewmodel();

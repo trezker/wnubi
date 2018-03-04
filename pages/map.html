@@ -67,7 +67,11 @@
 				</div>
 			</div>
 			<div style="width: 200px; float: left;" data-bind="foreach: worlds">
-				<div style="margin: 1em; cursor: pointer;" data-bind="text: name, click: $root.SelectWorld"></div>
+				<div style="margin: 1em;">
+					<div style="float: left; cursor: pointer;" data-bind="text: name, click: $root.SelectWorld"></div>
+					<div style="float: right; cursor: pointer;" data-bind="click: $root.DeleteWorld">X</div>
+					<div style="clear: both;"></div>
+				<div>
 			</div>
 		</div>
 	</div>
