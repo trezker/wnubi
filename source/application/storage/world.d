@@ -75,6 +75,10 @@ class World_storage {
 		collection.update(selector, update);
 	}
 
+	void Delete(BsonObjectID worldId) {
+		collection.remove(Bson(["_id": Bson(worldId)]));
+	}
+
 	Bson ById(string id) {
 		BsonObjectID oid = BsonObjectID.fromString(id);
 		auto conditions = Bson(["_id": Bson(oid)]);
