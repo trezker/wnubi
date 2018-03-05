@@ -135,7 +135,7 @@ function getmap() {
 	var vmvars = ko.mapping.toJS(mapViewmodel.mapParameters);
 
 	var data = {
-		"action": "GetMap",
+		"action": "WorldPreview",
 		"seed": vmvars.seed,
 		"perlinScale": vmvars.perlinScale,
 		"octaves": vmvars.octaves,

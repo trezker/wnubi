@@ -1,4 +1,4 @@
-module application.GetMap;
+module application.WorldPreview;
 
 import std.stdio;
 import std.math;
@@ -76,7 +76,7 @@ Region[] regions = [
 	Render radius 50px*100 = 5000
 */
 
-class GetMap: Action {
+class WorldPreview: Action {
 	HttpResponse Perform(HttpRequest req) {
 		HttpResponse res = new HttpResponse;
 		int seed = req.query["seed"].to!int;
@@ -184,8 +184,8 @@ class GetMap: Action {
 
 class Test : TestSuite {
 	this() {
-		AddTest(&GetMap_without_parameters_should_fail);
-		AddTest(&GetMap_with_specific_parameters_should_succeed);
+		AddTest(&WorldPreview_without_parameters_should_fail);
+		AddTest(&WorldPreview_with_specific_parameters_should_succeed);
 	}
 
 	override void Setup() {
@@ -194,16 +194,16 @@ class Test : TestSuite {
 	override void Teardown() {
 	}
 
-	void GetMap_without_parameters_should_fail() {
+	void WorldPreview_without_parameters_should_fail() {
 		Get get = new Get();
-		get.SetActionCreator("test", () => new GetMap);
+		get.SetActionCreator("test", () => new WorldPreview);
 		ActionTester tester = new ActionTester(&get.Perform, "http://test.com/test?action=test");
 
 		string textoutput = tester.GetResponseText();
 		assertEqual(indexOf(textoutput, "500") == -1, false);
 	}
 
-	void GetMap_with_specific_parameters_should_succeed() {
+	void WorldPreview_with_specific_parameters_should_succeed() {
 		string[] args = [
 			"action=test",
 			"seed=1",
@@ -220,7 +220,7 @@ class Test : TestSuite {
 		string argstring = join(args, "&");
 
 		Get get = new Get();
-		get.SetActionCreator("test", () => new GetMap);
+		get.SetActionCreator("test", () => new WorldPreview);
 		ActionTester tester = new ActionTester(&get.Perform, "http://test.com/test?" ~ argstring);
 
 		auto responseLines = tester.GetResponseLines();
@@ -235,4 +235,4 @@ unittest {
 	auto test = new Test;
 	test.Run();
 }
-/*action=GetMap&perlinScale=1&octaves=4&persistence=0.5&lacunarity=2&rotatey=0&radius=50*/
+/*action=WorldPreview&perlinScale=1&octaves=4&persistence=0.5&lacunarity=2&rotatey=0&radius=50*/

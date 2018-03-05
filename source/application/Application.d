@@ -16,7 +16,7 @@ import application.CreateUser;
 import application.Login;
 import application.Logout;
 import application.CurrentUser;
-import application.GetMap;
+import application.WorldPreview;
 import application.CreateWorld;
 import application.UpdateWorld;
 import application.ListWorlds;
@@ -38,7 +38,7 @@ class Application {
 		ajax.SetActionCreator("ListWorlds", () => new ListWorlds(worldStorage));
 		ajax.SetActionCreator("DeleteWorld", () => new DeleteWorld(worldStorage));
 
-		get.SetActionCreator("GetMap", () => new GetMap);
+		get.SetActionCreator("WorldPreview", () => new WorldPreview);
 	}
 
 	string RewritePath(HttpRequest request) {
