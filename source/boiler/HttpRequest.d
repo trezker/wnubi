@@ -20,6 +20,7 @@ alias FormFields = DictionaryList!(string, true, 16);
 
 interface Action {
 	public HttpResponse Perform(HttpRequest req);
+	public bool HasAccess(HttpRequest req);
 }
 
 class HttpRequest {

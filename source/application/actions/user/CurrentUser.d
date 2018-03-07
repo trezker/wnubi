@@ -20,6 +20,10 @@ class CurrentUser: Action {
 		this.user_storage = user_storage;
 	}	
 
+	bool HasAccess(HttpRequest req) {
+		return true;
+	}
+
 	HttpResponse Perform(HttpRequest request) {
 		HttpResponse response = new HttpResponse;
 		try {

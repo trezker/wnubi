@@ -20,6 +20,10 @@ class CreateWorld: Action {
 		this.world_storage = world_storage;
 	}
 
+	bool HasAccess(HttpRequest req) {
+		return true;
+	}
+
 	HttpResponse Perform(HttpRequest request) {
 		HttpResponse res = new HttpResponse;
 		try {

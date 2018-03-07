@@ -15,6 +15,10 @@ import application.storage.user;
 import application.testhelpers;
 
 class Logout: Action {
+	bool HasAccess(HttpRequest req) {
+		return true;
+	}
+
 	HttpResponse Perform(HttpRequest req) {
 		HttpResponse res = new HttpResponse;
 		try {

@@ -21,6 +21,10 @@ class Login: Action {
 		this.user_storage = user_storage;
 	}	
 
+	bool HasAccess(HttpRequest req) {
+		return true;
+	}
+
 	HttpResponse Perform(HttpRequest req) {
 		HttpResponse res = new HttpResponse;
 		try {

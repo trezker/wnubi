@@ -15,8 +15,20 @@ alias ActionCreator = Action delegate();
 class Ajax: Action {
 	private ActionCreator[string] actionCreators;
 
+	bool HasAccess(HttpRequest req) {
+		return true;
+	}
+
 	public void SetActionCreator(string name, ActionCreator actionCreator) {
 		actionCreators[name] = actionCreator;
+	}
+
+	private HttpResponse BuildFailResponse(int code) {
+		auto res = new HttpResponse;
+		Json json = Json.emptyObject;
+		json["success"] = false;
+		res.writeBody(serializeToJsonString(json), code);
+		return res;
 	}
 
 	public HttpResponse Perform(HttpRequest req) {
@@ -25,26 +37,29 @@ class Ajax: Action {
 			string actionName = req.json["action"].to!string;
 			if(actionName in actionCreators) {
 				Action action = actionCreators[actionName]();
-				res = action.Perform (req);
+				if(action.HasAccess(req)) {
+					res = action.Perform (req);
+				}
+				else {
+					res = BuildFailResponse(403);
+				}
 			}
 			else {
-				res = new HttpResponse;
-				Json json = Json.emptyObject;
-				json["success"] = false;
-				res.writeBody(serializeToJsonString(json), 200);
+				res = BuildFailResponse(404);
 			}
 		}
 		catch(Exception e) {
-			Json json = Json.emptyObject;
-			json["success"] = false;
-			res = new HttpResponse;
-			res.writeBody(serializeToJsonString(json), 200);
+			res = BuildFailResponse(500);
 		}
 		return res;
 	}
 }
 
 class SuccessTestHandler : Action {
+	bool HasAccess(HttpRequest req) {
+		return true;
+	}
+
 	public HttpResponse Perform(HttpRequest req) {
 		HttpResponse res = new HttpResponse;
 		Json json = Json.emptyObject;

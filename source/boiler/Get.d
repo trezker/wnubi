@@ -16,6 +16,10 @@ alias ActionCreator = Action delegate();
 class Get: Action {
 	private ActionCreator[string] actionCreators;
 
+	bool HasAccess(HttpRequest req) {
+		return true;
+	}
+
 	public void SetActionCreator(string name, ActionCreator actionCreator) {
 		actionCreators[name] = actionCreator;
 	}
@@ -26,7 +30,13 @@ class Get: Action {
 			string actionName = req.query["action"].to!string;
 			if(actionName in actionCreators) {
 				Action action = actionCreators[actionName]();
-				res = action.Perform (req);
+				if(action.HasAccess(req)) {
+					res = action.Perform (req);
+				}
+				else {
+					res = new HttpResponse;
+					res.writeBody("<html><head><title>403 Forbidden</title></head><body><h1>403 Forbidden</h1></body></html>", 404);
+				}
 			}
 			else {
 				res = new HttpResponse;
@@ -42,6 +52,10 @@ class Get: Action {
 }
 
 class SuccessTestHandler : Action {
+	bool HasAccess(HttpRequest req) {
+		return true;
+	}
+
 	public HttpResponse Perform(HttpRequest req) {
 		HttpResponse res = new HttpResponse;
 		res.writeBody("Hello world", 200);
@@ -50,12 +64,20 @@ class SuccessTestHandler : Action {
 }
 
 class ErrorTestHandler : Action {
+	bool HasAccess(HttpRequest req) {
+		return true;
+	}
+
 	public HttpResponse Perform(HttpRequest req) {
 		throw(new Exception("Error"));
 	}
 }
 
 class DataTestHandler : Action {
+	bool HasAccess(HttpRequest req) {
+		return true;
+	}
+
 	public HttpResponse Perform(HttpRequest req) {
 		HttpResponse res = new HttpResponse;
 		ubyte[] data = [1, 2, 3, 45, 243, 43, 123, 53];

@@ -77,6 +77,10 @@ Region[] regions = [
 */
 
 class WorldPreview: Action {
+	bool HasAccess(HttpRequest req) {
+		return true;
+	}
+
 	HttpResponse Perform(HttpRequest req) {
 		HttpResponse res = new HttpResponse;
 		int seed = req.query["seed"].to!int;
