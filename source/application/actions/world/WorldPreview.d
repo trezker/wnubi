@@ -88,9 +88,9 @@ class WorldPreview: Action {
 		int octaves = req.query["octaves"].to!int;
 		double persistence = req.query["persistence"].to!double;
 		double lacunarity = req.query["lacunarity"].to!double;
-		double rotatedegrees = req.query["rotatey"].to!double;
-		double rotatey = req.query["rotatey"].to!double * PI / 180.0;
-		double rotatex = req.query["rotatex"].to!double * PI / 180.0;
+		double rotatedegrees = req.query["longitude"].to!double;
+		double longitude = req.query["longitude"].to!double * PI / 180.0;
+		double latitude = req.query["latitude"].to!double * PI / 180.0;
 		double radius = req.query["radius"].to!double;
 		int width = req.query["width"].to!int;
 		int height = req.query["height"].to!int;
@@ -125,9 +125,9 @@ class WorldPreview: Action {
 				}
 
 				p.normalize();
-				rotateAroundAxis(p, Vector3d(0.0, 0.0, 0.0), Vector3d(0.0, 1.0, 0.0), rotatey);
+				rotateAroundAxis(p, Vector3d(0.0, 0.0, 0.0), Vector3d(0.0, 1.0, 0.0), longitude);
 				p.normalize();
-				rotateAroundAxis(p, Vector3d(0.0, 0.0, 0.0), Vector3d(1.0, 0.0, 0.0), rotatex);
+				rotateAroundAxis(p, Vector3d(0.0, 0.0, 0.0), Vector3d(1.0, 0.0, 0.0), latitude);
 				p.normalize();
 				int layer = 0;
 				
@@ -215,8 +215,8 @@ class Test : TestSuite {
 			"octaves=4",
 			"persistence=0.5",
 			"lacunarity=2",
-			"rotatey=1",
-			"rotatex=1",
+			"longitude=1",
+			"latitude=1",
 			"radius=50",
 			"width=50",
 			"height=50"
@@ -239,4 +239,4 @@ unittest {
 	auto test = new Test;
 	test.Run();
 }
-/*action=WorldPreview&perlinScale=1&octaves=4&persistence=0.5&lacunarity=2&rotatey=0&radius=50*/
+/*action=WorldPreview&perlinScale=1&octaves=4&persistence=0.5&lacunarity=2&longitude=0&radius=50*/

@@ -2,8 +2,8 @@ var MapViewmodel = function() {
 	var self = this;
 
 	self.autorotate = ko.observable(false);
-	self.rotatey = ko.observable(0);
-	self.rotatex = ko.observable(0);
+	self.longitude = ko.observable(0);
+	self.latitude = ko.observable(0);
 
 	self.worlds = ko.observableArray();
 
@@ -117,17 +117,17 @@ $("#mapimage3").on("load", imgload);
 var xdir = -.5;
 
 function getmap() {
-	var rotatey = mapViewmodel.rotatey();
-	var rotatex = mapViewmodel.rotatex();
+	var longitude = mapViewmodel.longitude();
+	var latitude = mapViewmodel.latitude();
 	if(mapViewmodel.autorotate()) {
-		rotatey+=4;
-		if(rotatey>360)
-			rotatey-=360;
-		mapViewmodel.rotatey(rotatey);
+		longitude+=4;
+		if(longitude>360)
+			longitude-=360;
+		mapViewmodel.longitude(longitude);
 	}
 	/*
-	rotatex += xdir;
-	if(rotatex>=90 || rotatex<=-90) {
+	latitude += xdir;
+	if(latitude>=90 || latitude<=-90) {
 		xdir = -xdir;
 	}
 */
@@ -142,8 +142,8 @@ function getmap() {
 		"octaves": vmvars.octaves,
 		"persistence": vmvars.persistence,
 		"lacunarity": vmvars.lacunarity,
-		"rotatey": rotatey,
-		"rotatex": rotatex,
+		"longitude": longitude,
+		"latitude": latitude,
 		"radius": radius,
 		"width": width,
 		"height": height
