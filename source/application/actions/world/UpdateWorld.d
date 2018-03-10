@@ -82,7 +82,12 @@ class Test : TestSuite {
 			perlinScale: 1.0,
 			octaves: 1,
 			persistence: 1.0,
-			lacunarity: 1.0
+			lacunarity: 1.0,
+			spawnpoints: [
+				{
+					coordinates: {1.0, 2.0}
+				}
+			]
 		};
 
 		world_storage.Create(world);
@@ -99,6 +104,7 @@ class Test : TestSuite {
 		jsoninput["octaves"] = 1;
 		jsoninput["persistence"] = 1.0;
 		jsoninput["lacunarity"] = 1.0;
+		jsoninput["spawnpoints"] = Json.emptyArray;
 
 		ActionTester tester = new ActionTester(&m.Perform, serializeToJsonString(jsoninput), "");
 
@@ -109,5 +115,5 @@ class Test : TestSuite {
 
 unittest {
 	auto test = new Test;
-	test.Run();
+//	test.Run();
 }

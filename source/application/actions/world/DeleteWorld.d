@@ -83,7 +83,12 @@ class Test : TestSuite {
 			perlinScale: 1.0,
 			octaves: 1,
 			persistence: 1.0,
-			lacunarity: 1.0
+			lacunarity: 1.0,
+			spawnpoints: [
+				{
+					coordinates: {1.0, 2.0}
+				}
+			]
 		};
 		world_storage.Create(world);
 

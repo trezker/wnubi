@@ -19,6 +19,7 @@ struct NewWorld {
 	int octaves;
 	double persistence;
 	double lacunarity;
+	SpawnPoint[] spawnpoints;
 }
 
 struct World {
@@ -29,6 +30,16 @@ struct World {
 	int octaves;
 	double persistence;
 	double lacunarity;
+	SpawnPoint[] spawnpoints;
+}
+
+struct SpawnPoint {
+	Coordinates coordinates;
+}
+
+struct Coordinates {
+	double longitude;
+	double latitude;
 }
 
 class World_storage {
@@ -41,16 +52,8 @@ class World_storage {
 
 	void Create(NewWorld world) {
 		try {
-			collection.insert(
-				Bson([
-					"name": Bson(world.name),
-					"seed": Bson(world.seed),
-					"perlinScale": Bson(world.perlinScale),
-					"octaves": Bson(world.octaves),
-					"persistence": Bson(world.persistence),
-					"lacunarity": Bson(world.lacunarity)
-				])
-			);
+			writeln(world);
+			collection.insert(world);
 		}
 		catch(Exception e) {
 			//if(!canFind(e.msg, "duplicate key error")) {
@@ -63,14 +66,7 @@ class World_storage {
 	void Update(World world) {
 		auto selector = Bson(["_id": Bson(world._id)]);
 		auto update = Bson([
-			"$set": Bson([
-				"name": Bson(world.name),
-				"seed": Bson(world.seed),
-				"perlinScale": Bson(world.perlinScale),
-				"octaves": Bson(world.octaves),
-				"persistence": Bson(world.persistence),
-				"lacunarity": Bson(world.lacunarity)
-			])
+			"$set": world.serializeToBson()
 		]);
 		collection.update(selector, update);
 	}
@@ -88,6 +84,10 @@ class World_storage {
 
 	World[] List() {
 		return MongoArray!(World)(collection);
+	}
+
+	void UpdateSpawnPoints(string worldId, double latitude, double longitude) {
+
 	}
 }
 
@@ -118,7 +118,12 @@ class Test : TestSuite {
 			perlinScale: 1.0,
 			octaves: 1,
 			persistence: 1.0,
-			lacunarity: 1.0
+			lacunarity: 1.0,
+			spawnpoints: [
+				{
+					coordinates: {1.0, 2.0}
+				}
+			]
 		};
 
 		assertNotThrown(world_storage.Create(world));
@@ -149,7 +154,12 @@ class Test : TestSuite {
 			perlinScale: 1.0,
 			octaves: 1,
 			persistence: 1.0,
-			lacunarity: 1.0
+			lacunarity: 1.0,
+			spawnpoints: [
+				{
+					coordinates: {1.0, 2.0}
+				}
+			]
 		};
 
 		world_storage.Create(world);

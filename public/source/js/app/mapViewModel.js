@@ -14,7 +14,8 @@ var MapViewmodel = function() {
 		perlinScale: 0.5,
 		octaves: 8,
 		persistence: 0.6,
-		lacunarity: 2.5
+		lacunarity: 2.5,
+		spawnpoints: []
 	};
 
 	self.canvas = null;

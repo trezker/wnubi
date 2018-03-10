@@ -82,6 +82,7 @@ class Test : TestSuite {
 		jsoninput["octaves"] = 1;
 		jsoninput["persistence"] = 1.0;
 		jsoninput["lacunarity"] = 1.0;
+		jsoninput["spawnpoints"] = Json.emptyArray;
 
 		ActionTester tester = new ActionTester(&m.Perform, serializeToJsonString(jsoninput), "");
 

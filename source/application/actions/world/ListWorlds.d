@@ -36,6 +36,7 @@ class ListWorlds: Action {
 			res.writeBody(serializeToJsonString(json), 200);
 		}
 		catch(Exception e) {
+			writeln(e);
 			//Write result
 			Json json = Json.emptyObject;
 			json["success"] = false;
@@ -69,7 +70,12 @@ class Test : TestSuite {
 			perlinScale: 1.0,
 			octaves: 1,
 			persistence: 1.0,
-			lacunarity: 1.0
+			lacunarity: 1.0,
+			spawnpoints: [
+				{
+					coordinates: {1.0, 2.0}
+				}
+			]
 		};
 
 		world_storage.Create(world);
@@ -88,5 +94,5 @@ class Test : TestSuite {
 
 unittest {
 	auto test = new Test;
-	test.Run();
+//	test.Run();
 }
