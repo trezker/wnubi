@@ -81,7 +81,16 @@ var MapViewmodel = function() {
 				self.LoadWorlds();
 			}
 		});
-	}
+	};
+
+	self.AddSpawnPoint = function() {
+		self.mapParameters.spawnpoints.push({
+			coordinates: {
+				longitude: parseFloat(self.longitude()),
+				latitude: parseFloat(self.latitude())
+			}
+		});
+	};
 };
 
 var mapViewmodel = new MapViewmodel();

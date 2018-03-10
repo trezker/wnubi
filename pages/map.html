@@ -38,6 +38,9 @@
 					</div>
 				</form>
 				<div class="form-group">
+					<button data-bind="click: AddSpawnPoint" class="btn btn-primary">Add spawnpoint</button>
+				</div>
+				<div class="form-group">
 					<label class="control-label">Name</label>
 					<input type="text" class="form-control" data-bind="value: mapParameters.name" />
 				</div>
@@ -66,12 +69,19 @@
 					<button data-bind="click: UpdateMap" class="btn btn-primary">Update</button>
 				</div>
 			</div>
+			<div style="width: 200px; float: left;" data-bind="foreach: mapParameters.spawnpoints">
+				<div style="margin: 1em;">
+					<div style="float: left; cursor: pointer;" data-bind="text: coordinates.longitude"></div>
+					<div style="float: right; cursor: pointer;" data-bind="text: coordinates.latitude"></div>
+					<div style="clear: both;"></div>
+				</div>
+			</div>
 			<div style="width: 200px; float: left;" data-bind="foreach: worlds">
 				<div style="margin: 1em;">
 					<div style="float: left; cursor: pointer;" data-bind="text: name, click: $root.SelectWorld"></div>
 					<div style="float: right; cursor: pointer;" data-bind="click: $root.DeleteWorld">X</div>
 					<div style="clear: both;"></div>
-				<div>
+				</div>
 			</div>
 		</div>
 	</div>
