@@ -11,14 +11,30 @@
 <body>
 	<div class="maingrid">
 		<div>
-			<div>
-				<img id="mapimage" />
-				<img id="mapimage2" />
-				<img id="mapimage3" />
-				<div style="position: absolute; top: 45px; left: 45px; width: 10px; height: 10px; border: 1px solid black;"></div>
-				<div style="position: absolute; top: 45px; left: 149px; width: 10px; height: 10px; border: 1px solid black;"></div>
-			</div>
 			<div style="width: 200px; float: left;">
+				<h4>Worlds</h4>
+				<div data-bind="foreach: worlds">
+					<div style="margin: 1em;">
+						<div style="float: left; cursor: pointer;" data-bind="text: name, click: $root.SelectWorld"></div>
+						<div style="float: right; cursor: pointer;" data-bind="click: $root.DeleteWorld">X</div>
+						<div style="clear: both;"></div>
+					</div>
+				</div>
+			</div>
+			<div style="width: 300px; float: left;">
+				<div>
+					<div style="float: left;">
+						<img id="mapimage" />
+						<div style="position: relative; top: -55px; left: 45px; width: 10px; height: 10px; border: 1px solid black;"></div>
+					</div>
+					<div style="float: left;">
+						<img id="mapimage2" />
+						<div style="position: relative; top: -55px; left: 45px; width: 10px; height: 10px; border: 1px solid black;"></div>
+					</div>
+					<div style="float: left;">
+						<img id="mapimage3" />
+					</div>
+				</div>
 				<label class="control-label">Rotate</label>
 				<form class="form-inline">
 					<div class="form-group">
@@ -69,19 +85,14 @@
 					<button data-bind="click: UpdateMap" class="btn btn-primary">Update</button>
 				</div>
 			</div>
-			<div style="width: 200px; float: left;" data-bind="foreach: mapParameters.spawnpoints">
-				<div style="margin: 1em;">
-					<div style="float: left; cursor: pointer;" data-bind="text: coordinates.longitude"></div>
-					<div style="float: right; cursor: pointer;" data-bind="text: coordinates.latitude"></div>
-					<div style="clear: both;"></div>
-				</div>
-			</div>
-			<div style="width: 200px; float: left;" data-bind="foreach: worlds">
-				<div style="margin: 1em;">
-					<div style="float: left; cursor: pointer;" data-bind="text: name, click: $root.SelectWorld"></div>
-					<div style="float: right; cursor: pointer;" data-bind="click: $root.DeleteWorld">X</div>
-					<div style="clear: both;"></div>
-				</div>
+			<div style="width: 200px; float: left;">
+				<h4>Spawnpoints</h4>
+				<div data-bind="foreach: mapParameters.spawnpoints">
+					<div style="margin: 1em;">
+						<div style="float: left; cursor: pointer;" data-bind="text: coordinates.longitude"></div>
+						<div style="float: right; cursor: pointer;" data-bind="text: coordinates.latitude"></div>
+						<div style="clear: both;"></div>
+					</div>
 			</div>
 		</div>
 	</div>
