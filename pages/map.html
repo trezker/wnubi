@@ -87,12 +87,20 @@
 			</div>
 			<div style="width: 200px; float: left;">
 				<h4>Spawnpoints</h4>
-				<div data-bind="foreach: mapParameters.spawnpoints">
-					<div style="margin: 1em;">
-						<div style="float: left; cursor: pointer;" data-bind="text: coordinates.longitude"></div>
-						<div style="float: right; cursor: pointer;" data-bind="text: coordinates.latitude"></div>
-						<div style="clear: both;"></div>
-					</div>
+				<table style="width: 100%">
+					<thead>
+						<tr>
+							<th>Longitude</th>
+							<th>Latitude</th>
+						</tr>
+					</thead>
+					<tbody data-bind="foreach: mapParameters.spawnpoints">
+						<tr>
+							<td data-bind="text: coordinates.longitude"></td>
+							<td data-bind="text: coordinates.latitude"></td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>
