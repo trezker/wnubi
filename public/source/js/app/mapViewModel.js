@@ -91,6 +91,17 @@ var MapViewmodel = function() {
 			}
 		});
 	};
+
+	self.GoToSpawnpoint = function(item) {
+		self.longitude(item.coordinates.longitude());
+		self.latitude(item.coordinates.latitude());
+	};
+
+	self.DeleteSpawnpoint = function(item) {
+		self.mapParameters.spawnpoints.remove(function(spawnpoint) {
+			return item == spawnpoint;
+		});
+	};
 };
 
 var mapViewmodel = new MapViewmodel();

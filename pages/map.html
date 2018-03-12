@@ -95,9 +95,10 @@
 						</tr>
 					</thead>
 					<tbody data-bind="foreach: mapParameters.spawnpoints">
-						<tr>
+						<tr data-bind="click: $root.GoToSpawnpoint">
 							<td data-bind="text: coordinates.longitude"></td>
 							<td data-bind="text: coordinates.latitude"></td>
+							<td data-bind="click: $root.DeleteSpawnpoint">X</td>
 						</tr>
 					</tbody>
 				</table>
