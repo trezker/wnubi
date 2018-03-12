@@ -26,7 +26,6 @@ var MapViewmodel = function() {
 			action: "ListWorlds"
 		};
 		ajax_post(data).done(function(returnedData) {
-			console.log(returnedData);
 			if(returnedData.success == true) {
 				self.worlds(returnedData.worlds);
 			}
@@ -46,7 +45,6 @@ var MapViewmodel = function() {
 		data.persistence = parseFloat(data.persistence);
 		data.lacunarity = parseFloat(data.lacunarity);
 		ajax_post(data).done(function(returnedData) {
-			console.log(returnedData);
 			if(returnedData.success == true) {
 				self.LoadWorlds();
 			}
@@ -62,7 +60,6 @@ var MapViewmodel = function() {
 		data.persistence = parseFloat(data.persistence);
 		data.lacunarity = parseFloat(data.lacunarity);
 		ajax_post(data).done(function(returnedData) {
-			console.log(returnedData);
 			if(returnedData.success == true) {
 				self.LoadWorlds();
 			}
@@ -70,13 +67,11 @@ var MapViewmodel = function() {
 	};
 
 	self.DeleteWorld = function(item) {
-		console.log(item);
 		var data = {
 			action: "DeleteWorld",
 			worldId: item._id
 		};
 		ajax_post(data).done(function(returnedData) {
-			console.log(returnedData);
 			if(returnedData.success == true) {
 				self.LoadWorlds();
 			}
@@ -101,6 +96,12 @@ var MapViewmodel = function() {
 		self.mapParameters.spawnpoints.remove(function(spawnpoint) {
 			return item == spawnpoint;
 		});
+	};
+	
+	self.MarkerPosition = function(item, p) {
+		console.log(item);
+		console.log(p);
+		return "top: 49; left: 49";
 	};
 };
 
