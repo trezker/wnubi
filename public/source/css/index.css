@@ -11,6 +11,7 @@
 }
 
 #map {
+	position: relative;
 	height: 100%;
 	width: 100%;
 }
@@ -18,4 +19,20 @@
 #eventList .event {
 	cursor: pointer;
 	margin: 1em;
+}
+
+.mapCenter {
+	position: absolute;
+	top: 45px;
+	left: 45px;
+	width: 10px;
+	height: 10px;
+	border: 1px solid black;
+}
+
+.SpawnpointMarker {
+	position: absolute;
+	width: 3px;
+	height: 3px;
+	border: 1px solid red;
 }

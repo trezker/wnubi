@@ -23,16 +23,25 @@
 			</div>
 			<div style="width: 300px; float: left;">
 				<div>
-					<div style="float: left;">
+					<div style="float: left; position: relative;">
 						<img id="mapimage" />
-						<div style="position: relative; top: -55px; left: 45px; width: 10px; height: 10px; border: 1px solid black;"></div>
+						<div class="mapCenter"></div>
+						<!-- ko foreach: mapParameters.spawnpoints -->
+							<div style="top: 49px; left: 49px; " class="SpawnpointMarker"></div>
+						<!-- /ko -->
 					</div>
-					<div style="float: left;">
+					<div style="float: left; position: relative;">
 						<img id="mapimage2" />
-						<div style="position: relative; top: -55px; left: 45px; width: 10px; height: 10px; border: 1px solid black;"></div>
+						<div class="mapCenter"></div>
+						<!-- ko foreach: mapParameters.spawnpoints -->
+							<div style="top: 49px; left: 49px; " class="SpawnpointMarker"></div>
+						<!-- /ko -->
 					</div>
-					<div style="float: left;">
+					<div style="float: left; position: relative;">
 						<img id="mapimage3" />
+						<!-- ko foreach: mapParameters.spawnpoints -->
+							<div style="top: 49px; left: 49px; " class="SpawnpointMarker"></div>
+						<!-- /ko -->
 					</div>
 				</div>
 				<label class="control-label">Rotate</label>
