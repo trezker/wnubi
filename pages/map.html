@@ -27,20 +27,20 @@
 						<img id="mapimage" />
 						<div class="mapCenter"></div>
 						<!-- ko foreach: mapParameters.spawnpoints -->
-							<div data-bind="attr: { style: $root.MarkerPosition($data, 1) }" class="SpawnpointMarker"></div>
+							<div data-bind="attr: { style: $root.MarkerPosition($data, 50) }" class="SpawnpointMarker"></div>
 						<!-- /ko -->
 					</div>
 					<div style="float: left; position: relative;">
 						<img id="mapimage2" />
 						<div class="mapCenter"></div>
 						<!-- ko foreach: mapParameters.spawnpoints -->
-							<div data-bind="attr: { style: $root.MarkerPosition($data, 1) }" class="SpawnpointMarker"></div>
+							<div data-bind="attr: { style: $root.MarkerPosition($data, 500) }" class="SpawnpointMarker"></div>
 						<!-- /ko -->
 					</div>
 					<div style="float: left; position: relative;">
 						<img id="mapimage3" />
 						<!-- ko foreach: mapParameters.spawnpoints -->
-							<div data-bind="attr: { style: $root.MarkerPosition($data, 1) }" class="SpawnpointMarker"></div>
+							<div data-bind="attr: { style: $root.MarkerPosition($data, 5000) }" class="SpawnpointMarker"></div>
 						<!-- /ko -->
 					</div>
 				</div>
@@ -49,13 +49,13 @@
 					<div class="form-group">
 	  					<input type="checkbox" class="form-control" data-bind="checked: autorotate" />
 					</div>
-					<div class="form-group" style="width: 6em">
+					<div class="form-group" style="width: 8em">
 						<div class="input-group">
 							<span class="input-group-addon">Lng</span>
 							<input type="text" class="form-control" style="width: 100%" data-bind="value: longitude" />
 						</div>
 					</div>
-					<div class="form-group" style="width: 6em">
+					<div class="form-group" style="width: 8em">
 						<div class="input-group">
 							<span class="input-group-addon">Lat</span>
 							<input type="text" class="form-control" style="width: 100%" data-bind="value: latitude" />

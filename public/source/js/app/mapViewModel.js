@@ -98,10 +98,19 @@ var MapViewmodel = function() {
 		});
 	};
 	
-	self.MarkerPosition = function(item, p) {
+	self.MarkerPosition = function(item, radius) {
 		console.log(item);
-		console.log(p);
-		return "top: 49; left: 49";
+		console.log(radius);
+		var lngrad = (item.coordinates.longitude() - self.longitude()) * Math.PI / 180.0;
+		var latrad = (item.coordinates.latitude() - self.latitude()) * Math.PI / 180.0;
+		console.log(lngrad);
+		console.log(latrad);
+		var x = Math.cos(-latrad) * Math.sin(lngrad) * radius + 49;
+		var y = Math.sin(-latrad) * radius + 49;
+		var display = "";
+		if(x<0 || x>100 || y<0 || y>100 || lngrad > Math.PI/2 || lngrad < -Math.PI/2)
+			display = "display: none;";
+		return "top: " + y + "; left: " + x + ";" + display;
 	};
 };
 
@@ -141,9 +150,11 @@ function getmap() {
 	var longitude = mapViewmodel.longitude();
 	var latitude = mapViewmodel.latitude();
 	if(mapViewmodel.autorotate()) {
-		longitude+=4;
-		if(longitude>360)
+		longitude+=1;
+		if(longitude>180)
 			longitude-=360;
+		if(longitude<-180)
+			longitude+=360;
 		mapViewmodel.longitude(longitude);
 	}
 	/*
