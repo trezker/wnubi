@@ -81,8 +81,8 @@ var MapViewmodel = function() {
 	self.AddSpawnPoint = function() {
 		self.mapParameters.spawnpoints.push({
 			coordinates: {
-				longitude: parseFloat(self.longitude()),
-				latitude: parseFloat(self.latitude())
+				longitude: ko.observable(parseFloat(self.longitude())),
+				latitude: ko.observable(parseFloat(self.latitude()))
 			}
 		});
 	};
