@@ -1,5 +1,6 @@
 module boiler.ActionTester;
 
+import std.conv;
 import std.stdio;
 import std.algorithm;
 import vibe.inet.url;
@@ -133,7 +134,7 @@ class ActionTester {
 		for(int i = 0; outputdata[i] != 0; ++i) {
 			outputdata[i] = 0;
 		}
-		response_stream = new MemoryStream(outputdata);
+		response_stream = createMemoryStream(outputdata);
 		viberesponse = createTestHTTPServerResponse(response_stream, vibesessionstore);
 	}
 

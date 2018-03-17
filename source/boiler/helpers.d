@@ -24,7 +24,7 @@ string get_random_string(uint length) {
 
 MemoryStream createInputStreamFromString(string input) {
 	ubyte[1000000] inputdata;
-	auto inputStream = new MemoryStream(inputdata);
+	auto inputStream = createMemoryStream(inputdata);
 	inputStream.write(cast(const(ubyte)[])input);
 	inputStream.seek(0);
 	return inputStream;
