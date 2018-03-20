@@ -11,12 +11,14 @@ import vibe.data.json;
 
 import vibe.utils.string;
 import vibe.utils.dictionarylist;
+import vibe.inet.url;
 
 import boiler.helpers;
 import boiler.HttpResponse;
 import boiler.testsuite;
 
 alias FormFields = DictionaryList!(string, true, 16);
+alias InetHeaderMap = DictionaryList!(string, false, 12);
 
 interface Action {
 	public HttpResponse Perform(HttpRequest req);
@@ -30,6 +32,7 @@ class HttpRequest {
 	string path;
 	string querystring;
 	FormFields query;
+	InetHeaderMap headers;
 
 	this(SessionStore sessionstore) {
 		this.sessionstore = sessionstore;
@@ -52,6 +55,82 @@ class HttpRequest {
 			session = Session.init;
 		}
 	}
+}
+
+//Function lifted from vibe webform.d
+void parseURLEncodedForm(string str, ref FormFields params)
+@safe {
+	import vibe.textfilter.urlencode;
+	while (str.length > 0) {
+		// name part
+		auto idx = str.indexOf("=");
+		if (idx == -1) {
+			idx = vibe.utils.string.indexOfAny(str, "&;");
+			if (idx == -1) {
+				params.addField(formDecode(str[0 .. $]), "");
+				return;
+			} else {
+				params.addField(formDecode(str[0 .. idx]), "");
+				str = str[idx+1 .. $];
+				continue;
+			}
+		} else {
+			auto idx_amp = vibe.utils.string.indexOfAny(str, "&;");
+			if (idx_amp > -1 && idx_amp < idx) {
+				params.addField(formDecode(str[0 .. idx_amp]), "");
+				str = str[idx_amp+1 .. $];
+				continue;
+			} else {
+				string name = formDecode(str[0 .. idx]);
+				str = str[idx+1 .. $];
+				// value part
+				for( idx = 0; idx < str.length && str[idx] != '&' && str[idx] != ';'; idx++) {}
+				string value = formDecode(str[0 .. idx]);
+				params.addField(name, value);
+				str = idx < str.length ? str[idx+1 .. $] : null;
+			}
+		}
+	}
+}
+
+private void parseCookies(string str, ref CookieValueMap cookies)
+@safe {
+	import std.encoding : sanitize;
+	import std.array : split;
+	import std.string : strip;
+	import std.algorithm.iteration : map, filter, each;
+	import vibe.http.common : Cookie;
+	() @trusted { return str.sanitize; } ()
+		.split(";")
+		.map!(kv => kv.strip.split("="))
+		.filter!(kv => kv.length == 2) //ignore illegal cookies
+		.each!(kv => cookies.add(kv[0], kv[1], Cookie.Encoding.raw) );
+}
+
+HttpRequest CreateHttpRequest(URL url, InetHeaderMap headers, string content, SessionStore sessionstore) {
+	import vibe.textfilter.urlencode;
+	HttpRequest request = new HttpRequest(sessionstore);
+	request.headers = headers;
+
+	if(headers.get("Content-Type") == "application/json") {
+		request.SetJsonFromString(content);
+	}
+
+	if(headers.get("Cookie") != "") {
+		CookieValueMap cookies;
+		parseCookies(headers["Cookie"], cookies);
+
+		foreach (val; cookies.getAll("session_id")) {
+			request.session = sessionstore.open(val);
+			if (request.session) break;
+		}
+	}
+
+	request.path = urlDecode(url.path.toString);
+	request.querystring = url.queryString;
+	parseURLEncodedForm(request.querystring, request.query);
+	
+	return request;
 }
 
 HttpRequest CreateHttpRequestFromVibeHttpRequest(HTTPServerRequest viberequest, SessionStore sessionstore) {

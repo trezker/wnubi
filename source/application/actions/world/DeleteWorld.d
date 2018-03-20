@@ -2,7 +2,6 @@ module application.DeleteWorld;
 
 import std.stdio;
 import std.datetime;
-import dauth;
 import vibe.http.server;
 import vibe.db.mongo.mongo;
 

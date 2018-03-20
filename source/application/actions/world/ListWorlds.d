@@ -1,7 +1,6 @@
 module application.ListWorlds;
 
 import std.stdio;
-import dauth;
 import vibe.http.server;
 import vibe.db.mongo.mongo;
 

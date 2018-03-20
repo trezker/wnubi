@@ -4,7 +4,6 @@ import std.conv;
 import std.stdio;
 import std.algorithm;
 import std.exception;
-import dauth;
 import vibe.db.mongo.mongo;
 import vibe.data.bson;
 
@@ -75,11 +74,12 @@ class World_storage {
 		collection.remove(Bson(["_id": Bson(worldId)]));
 	}
 
-	Bson ById(string id) {
+	World ById(string id) {
 		BsonObjectID oid = BsonObjectID.fromString(id);
 		auto conditions = Bson(["_id": Bson(oid)]);
 		auto obj = collection.findOne(conditions);
-		return obj;
+		World world = deserialize!(BsonSerializer, World)(obj);
+		return world;
 	}
 
 	World[] List() {
@@ -143,8 +143,8 @@ class Test : TestSuite {
 		auto obj = world_storage.List();
 		BsonObjectID oid = obj[0]._id;
 		string sid = oid.toString();
-		auto objid = world_storage.ById(sid);
-		assertEqual(objid["seed"].get!int, 1);
+		auto world2 = world_storage.ById(sid);
+		assertEqual(world2.seed, 1);
 	}
 
 	void Update_should_work() {

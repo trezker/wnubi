@@ -10,7 +10,6 @@ import vibe.utils.string;
 import vibe.inet.message;
 import vibe.stream.memory;
 import vibe.stream.operations;
-import vibe.textfilter.urlencode;
 
 import boiler.helpers;
 import boiler.testsuite;
@@ -19,43 +18,9 @@ import boiler.HttpResponse;
 
 alias Request_delegate = HttpResponse delegate(HttpRequest req);
 
-//Function lifted from vibe webform.d
-void parseURLEncodedForm(string str, ref FormFields params)
-@safe {
-	while (str.length > 0) {
-		// name part
-		auto idx = str.indexOf("=");
-		if (idx == -1) {
-			idx = vibe.utils.string.indexOfAny(str, "&;");
-			if (idx == -1) {
-				params.addField(formDecode(str[0 .. $]), "");
-				return;
-			} else {
-				params.addField(formDecode(str[0 .. idx]), "");
-				str = str[idx+1 .. $];
-				continue;
-			}
-		} else {
-			auto idx_amp = vibe.utils.string.indexOfAny(str, "&;");
-			if (idx_amp > -1 && idx_amp < idx) {
-				params.addField(formDecode(str[0 .. idx_amp]), "");
-				str = str[idx_amp+1 .. $];
-				continue;
-			} else {
-				string name = formDecode(str[0 .. idx]);
-				str = str[idx+1 .. $];
-				// value part
-				for( idx = 0; idx < str.length && str[idx] != '&' && str[idx] != ';'; idx++) {}
-				string value = formDecode(str[0 .. idx]);
-				params.addField(name, value);
-				str = idx < str.length ? str[idx+1 .. $] : null;
-			}
-		}
-	}
-}
-
 class ActionTester {
-	HTTPServerRequest viberequest;
+
+	//HTTPServerRequest viberequest;
 	HTTPServerResponse viberesponse;
 	HttpRequest request;
 	MemoryStream response_stream;
@@ -84,7 +49,8 @@ class ActionTester {
 		if(sessionID != null) {
 			headers["Cookie"] = "session_id=" ~ sessionID;
 		}
-		viberequest = createTestHTTPServerRequest(URL(url), HTTPMethod.POST, headers);
+		request = CreateHttpRequest(URL(url), headers, "", sessionstore);
+		//viberequest = createTestHTTPServerRequest(headers);
 		CallHandler(handler);
 	}
 
@@ -104,24 +70,26 @@ class ActionTester {
 			headers["Cookie"] = "session_id=" ~ sessionID;
 		}
 
-		auto inputStream = createInputStreamFromString(input);
-		viberequest = createTestHTTPServerRequest(URL(url), HTTPMethod.POST, headers, inputStream);
-		PopulateRequestJson();
+		request = CreateHttpRequest(URL(url), headers, input, sessionstore);
+		//auto inputStream = createInputStreamFromString(input);
+		//viberequest = createTestHTTPServerRequest(URL(url), HTTPMethod.POST, headers, inputStream);
+		//PopulateRequestJson();
 	}
-
+/*
 	private void PopulateRequestJson() {
 		// NOTICE: Code lifted from vibe.d source handleRequest
+		contentType
 		if (icmp2(viberequest.contentType, "application/json") == 0 || icmp2(viberequest.contentType, "application/vnd.api+json") == 0 ) {
 			auto bodyStr = () @trusted { return cast(string)viberequest.bodyReader.readAll(); } ();
 			if (!bodyStr.empty) viberequest.json = parseJson(bodyStr);
 		}
 	}
-
+*/
 	private void CallHandler(Request_delegate handler) {
-		SetRequestCookies();
-		parseURLEncodedForm(viberequest.queryString, viberequest.query);
+		//SetRequestCookies();
+		//parseURLEncodedForm(viberequest.queryString, viberequest.query);
 	
-		request = CreateHttpRequestFromVibeHttpRequest(viberequest, sessionstore);
+		//request = CreateHttpRequestFromVibeHttpRequest(viberequest, sessionstore);
 		HttpResponse response = handler(request);
 
 		PrepareVibeResponse();
@@ -137,7 +105,7 @@ class ActionTester {
 		response_stream = createMemoryStream(outputdata);
 		viberesponse = createTestHTTPServerResponse(response_stream, vibesessionstore);
 	}
-
+/*
 	private void SetRequestCookies() {
 		// NOTICE: Code lifted from vibe.d source handleRequest
 		// use the first cookie that contains a valid session ID in case
@@ -145,7 +113,7 @@ class ActionTester {
 		auto pv = "cookie" in viberequest.headers;
 		if (pv) parseCookies(*pv, viberequest.cookies);
 	}
-	
+*/	
 	// NOTICE: Code lifted from vibe.d source handleRequest
 	private void parseCookies(string str, ref CookieValueMap cookies)
 	@safe {

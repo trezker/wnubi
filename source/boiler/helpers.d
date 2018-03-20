@@ -7,6 +7,7 @@ import std.random : randomCover, rndGen;
 import std.range : chain;
 import std.string;
 import std.array;
+import std.utf;
 import core.exception;
 import vibe.stream.memory;
 import vibe.db.mongo.mongo;
@@ -25,7 +26,7 @@ string get_random_string(uint length) {
 MemoryStream createInputStreamFromString(string input) {
 	ubyte[1000000] inputdata;
 	auto inputStream = createMemoryStream(inputdata);
-	inputStream.write(cast(const(ubyte)[])input);
+	inputStream.write(cast(const(ubyte)[])input.toUTF8);
 	inputStream.seek(0);
 	return inputStream;
 }

@@ -113,7 +113,7 @@ class Test : TestSuite {
 	void Call_to_method_that_doesnt_exist_should_fail() {
 		Get get = new Get();
 
-		ActionTester tester = new ActionTester(&get.Perform, "{\"action\": \"none\"}", "http://test.com/test?action=test");
+		ActionTester tester = new ActionTester(&get.Perform, "http://test.com/test?action=test");
 
 		string textoutput = tester.GetResponseText();
 		assertEqual(indexOf(textoutput, "404") == -1, false);
@@ -123,7 +123,7 @@ class Test : TestSuite {
 		Get get = new Get();
 		get.SetActionCreator("test", () => new SuccessTestHandler);
 
-		ActionTester tester = new ActionTester(&get.Perform, "{\"action\": \"test\"}", "http://test.com/test?action=test");
+		ActionTester tester = new ActionTester(&get.Perform, "http://test.com/test?action=test");
 
 		string textoutput = tester.GetResponseText();
 		assertEqual(textoutput, "Hello world");

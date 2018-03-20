@@ -5,7 +5,6 @@ import std.math;
 import std.conv;
 import std.string;
 import std.algorithm;
-import dauth;
 import vibe.http.server;
 import vibe.db.mongo.mongo;
 import dlib.math;
