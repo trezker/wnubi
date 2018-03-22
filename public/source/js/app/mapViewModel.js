@@ -126,6 +126,7 @@ var radius = 50;
 var imagesloaded = 0;
 
 function imgload() {
+	console.log("loaded image");
 	imagesloaded++;
 	if(imagesloaded == 3) {
 		imagesloaded = 0;
@@ -139,11 +140,11 @@ $("#mapimage2").css("height", height);
 $("#mapimage2").css("width", width);
 $("#mapimage3").css("height", height);
 $("#mapimage3").css("width", width);
-
+/*
 $("#mapimage").on("load", imgload);
 $("#mapimage2").on("load", imgload);
 $("#mapimage3").on("load", imgload);
-
+*/
 var xdir = -.5;
 
 function getmap() {
@@ -188,6 +189,7 @@ function getmap() {
 	$("#mapimage").attr("src","/get?" + params);
 	$("#mapimage2").attr("src","/get?" + params2);
 	$("#mapimage3").attr("src","/get?" + params3);
+	setTimeout(getmap, 500);
 }
 
 getmap();
