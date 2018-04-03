@@ -10,6 +10,7 @@ import vibe.data.bson;
 import boiler.helpers;
 import boiler.testsuite;
 import application.Database;
+import application.data;
 
 struct NewWorld {
 	int seed;
@@ -36,11 +37,6 @@ struct SpawnPoint {
 	Coordinates coordinates;
 }
 
-struct Coordinates {
-	double longitude;
-	double latitude;
-}
-
 class World_storage {
 	Database database;
 	MongoCollection collection;
@@ -51,7 +47,6 @@ class World_storage {
 
 	void Create(NewWorld world) {
 		try {
-			writeln(world);
 			collection.insert(world);
 		}
 		catch(Exception e) {

@@ -49,7 +49,6 @@ class User_storage {
 		auto obj = collection.findOne(conditions);
 		return obj;
 	}
-
 }
 
 class Test : TestSuite {
@@ -135,3 +134,69 @@ unittest {
 	auto test = new Test;
 	test.Run();
 }
+
+/*
+user {
+	_id: "3ui5g42",
+	username: "Anders",
+	password: "i1gop5u11ui25hpö1",
+}
+
+character {
+	_id: "dajdbn412",
+	user: "h14f123uh4f",
+	coordinates: { "longitude" : 0, "latitude" : 0 },
+	inventory: [
+		{
+			resource: {
+				id: "4j12yhhg",
+				name: "Sand",
+				density: 1600
+			},
+			mass: 12
+		},
+		{
+			item: {
+				id: "gh12g5fc5",
+				name: "Hammer",
+				mass: 1,
+				volume: 0.01
+			},
+			list: [
+				{
+					decay: 0.4
+				}
+			]
+		}
+	],
+	knownCharacters: [
+		{
+			id: "gd412gh4f1",
+			name: "Torbjörn",
+			notes: "En jävel"
+		}
+	],
+	knownLocations: [
+		{
+			id: "g1f2d41gf25d",
+			name: "Johnnys glänta",
+			notes: "Mysigt ställe"
+		}
+	]
+}
+
+location {
+	_id: "12h4f12gjf",
+	coordinates: { "longitude" : 0, "latitude" : 0 },
+	resources: [
+	],
+	fauna: [
+	],
+	projects: [
+	],
+	sublocations: [
+	],
+	inventory: [
+	]
+}
+*/
