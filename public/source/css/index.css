@@ -36,3 +36,5 @@
 	height: 3px;
 	border: 1px solid red;
 }
+
+input[type="checkbox"] { height:auto }

@@ -11,7 +11,7 @@ class Database {
 	string dbname;
 
 	this(string dbsuffix) {
-		client = connectMongoDB("mongodb://localhost");
+		client = connectMongoDB("mongodb://127.0.0.1");
 		dbname = "my_database";
 		if(dbsuffix) {
 			dbname ~= "_" ~ dbsuffix;
