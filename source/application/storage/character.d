@@ -15,11 +15,13 @@ import application.data;
 import application.storage.user;
 
 struct NewCharacter {
+	BsonObjectID userId;
 	Coordinates coordinates;
 }
 
 struct Character {
 	BsonObjectID _id;
+	BsonObjectID userId;
 	Coordinates coordinates;
 }
 
@@ -43,11 +45,11 @@ class Character_storage {
 		}
 	}
 
-	Character[] ByUser(string id) {
-		BsonObjectID oid = BsonObjectID.fromString(id);
-		auto conditions = Bson(["_id": Bson(oid)]);
+	Character[] ByUser(string userId) {
+		BsonObjectID oid = BsonObjectID.fromString(userId);
+		auto conditions = Bson(["userId": Bson(oid)]);
 		auto obj = collection.findOne(conditions);
-		return MongoArray!(Character)(collection);
+		return MongoArray!(Character)(collection, conditions);
 	}
 /*
 	Character ById(string id) {
@@ -68,7 +70,7 @@ class Test : TestSuite {
 		user_storage = new User_storage(database);
 		
 		AddTest(&Create_character);
-		//AddTest(&Find_character_by_user);
+		AddTest(&Find_character_by_user);
 	}
 
 	override void Setup() {
@@ -81,27 +83,30 @@ class Test : TestSuite {
 
 	void Create_character() {
 		NewCharacter character = {
+			userId: BsonObjectID.fromString("000000000000000000000000"),
 			coordinates: {1.0, 2.0}
 		};
 
 		assertNotThrown(character_storage.Create(character));
 	}
-/*
+
 	void Find_character_by_user() {
-		auto character = {
+		auto userId = "000000000000000000000000";
+		NewCharacter character = {
+			userId: BsonObjectID.fromString(userId),
 			coordinates: {1.0, 2.0}
+		};
+
+		character_storage.Create(character);
+		character_storage.Create(character);
+
+		auto characters = character_storage.ByUser(userId);
+
+		assertEqual(2, characters.length);
+		foreach(e; characters) {
+			assertEqual(userId, e.userId.toString());
 		}
-
-		assertNotThrown(character_storage.Create(character));
-
-		auto obj = user_storage.ByUser(userId);
-		//Testing how to pass around id as string and then using it against mongo.
-		BsonObjectID oid = obj["_id"].get!BsonObjectID;
-		string sid = oid.toString();
-		auto objid = user_storage.UserById(sid);
-
-		assertEqual(objid["username"].get!string, username);
-	}*/
+	}
 }
 
 unittest {
