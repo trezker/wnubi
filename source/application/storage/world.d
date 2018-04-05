@@ -80,10 +80,6 @@ class World_storage {
 	World[] List() {
 		return MongoArray!(World)(collection);
 	}
-
-	void UpdateSpawnPoints(string worldId, double latitude, double longitude) {
-
-	}
 }
 
 class Test : TestSuite {
@@ -161,7 +157,6 @@ class Test : TestSuite {
 		auto obj = world_storage.List();
 		obj[0].seed = 2;
 		world_storage.Update(obj[0]);
-
 
 		auto obj2 = world_storage.List();
 		assertEqual(obj2[0].seed, 2);

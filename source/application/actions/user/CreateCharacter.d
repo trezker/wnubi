@@ -32,7 +32,6 @@ class CreateCharacter: Action {
 			string worldId = req.json["worldId"].to!string;
 
 			World world = world_storage.ById(worldId);
-			writeln(world);
 
 			auto latitude = world.spawnpoints[0].coordinates.latitude;
 			auto longitude = world.spawnpoints[0].coordinates.longitude;
