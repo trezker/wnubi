@@ -49,6 +49,10 @@ class HttpRequest {
 		return session;
 	}
 
+	string SessionID() {
+		return session.id;
+	}
+
 	void TerminateSession() {
 		if(session) {
 			sessionstore.destroy(session.id);

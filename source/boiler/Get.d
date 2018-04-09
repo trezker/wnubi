@@ -134,8 +134,7 @@ class Test : TestSuite {
 		get.SetActionCreator("test", () => new DataTestHandler);
 		ActionTester tester = new ActionTester(&get.Perform, "http://test.com/test?action=test");
 
-		string[] headers = tester.GetResponseLines();
-		assertEqual(indexOf(headers[0], "200") == -1, false);
+		assertEqual(tester.ResponseCode(), 200);
 	}
 }
 

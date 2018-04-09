@@ -19,24 +19,17 @@ import boiler.HttpResponse;
 alias Request_delegate = HttpResponse delegate(HttpRequest req);
 
 class ActionTester {
-
-	//HTTPServerRequest viberequest;
-	HTTPServerResponse viberesponse;
 	HttpRequest request;
-	MemoryStream response_stream;
-	ubyte[1000000] outputdata;
-	SessionStore vibesessionstore;
+	HttpResponse response;
 	SessionStore sessionstore;
 	string sessionID;
 
 	this(Request_delegate handler, string url) {
-		vibesessionstore = new MemorySessionStore ();
 		sessionstore = new MemorySessionStore ();
 		Request(handler, url);
 	}
 
 	this(Request_delegate handler, string input, string url) {
-		vibesessionstore = new MemorySessionStore ();
 		sessionstore = new MemorySessionStore ();
 		Request(handler, url, input);
 	}
@@ -50,7 +43,6 @@ class ActionTester {
 			headers["Cookie"] = "session_id=" ~ sessionID;
 		}
 		request = CreateHttpRequest(URL(url), headers, "", sessionstore);
-		//viberequest = createTestHTTPServerRequest(headers);
 		CallHandler(handler);
 	}
 
@@ -71,49 +63,13 @@ class ActionTester {
 		}
 
 		request = CreateHttpRequest(URL(url), headers, input, sessionstore);
-		//auto inputStream = createInputStreamFromString(input);
-		//viberequest = createTestHTTPServerRequest(URL(url), HTTPMethod.POST, headers, inputStream);
-		//PopulateRequestJson();
 	}
-/*
-	private void PopulateRequestJson() {
-		// NOTICE: Code lifted from vibe.d source handleRequest
-		contentType
-		if (icmp2(viberequest.contentType, "application/json") == 0 || icmp2(viberequest.contentType, "application/vnd.api+json") == 0 ) {
-			auto bodyStr = () @trusted { return cast(string)viberequest.bodyReader.readAll(); } ();
-			if (!bodyStr.empty) viberequest.json = parseJson(bodyStr);
-		}
-	}
-*/
+
 	private void CallHandler(Request_delegate handler) {
-		//SetRequestCookies();
-		//parseURLEncodedForm(viberequest.queryString, viberequest.query);
-	
-		//request = CreateHttpRequestFromVibeHttpRequest(viberequest, sessionstore);
-		HttpResponse response = handler(request);
-
-		PrepareVibeResponse();
-		RenderVibeHttpResponseFromRequestAndResponse(viberesponse, request, response);
-
+		response = handler(request);
 		sessionID = GetResponseSessionID();
 	}
 
-	private void PrepareVibeResponse() {
-		for(int i = 0; outputdata[i] != 0; ++i) {
-			outputdata[i] = 0;
-		}
-		response_stream = createMemoryStream(outputdata);
-		viberesponse = createTestHTTPServerResponse(response_stream, vibesessionstore);
-	}
-/*
-	private void SetRequestCookies() {
-		// NOTICE: Code lifted from vibe.d source handleRequest
-		// use the first cookie that contains a valid session ID in case
-		// of multiple matching session cookies
-		auto pv = "cookie" in viberequest.headers;
-		if (pv) parseCookies(*pv, viberequest.cookies);
-	}
-*/	
 	// NOTICE: Code lifted from vibe.d source handleRequest
 	private void parseCookies(string str, ref CookieValueMap cookies)
 	@safe {
@@ -132,13 +88,11 @@ class ActionTester {
 	}
 
 	public Json GetResponseJson() {
-		auto lines = GetResponseLines();
-		return parseJsonString(lines[$-1]);
+		return parseJsonString(response.content);
 	}
 
 	public string GetResponseText() {
-		auto lines = GetResponseLines();
-		return lines[$-1];
+		return response.content;
 	}
 
 	public const(T) GetResponseSessionValue(T)(string key) {
@@ -151,39 +105,15 @@ class ActionTester {
 	}
 
 	public string GetResponseSessionID() {
-		auto lines = GetResponseLines();
-		bool pred(string x) { return x.indexOf("session_id") != -1; }
-		auto session_lines = find!(pred)(lines);
-		if(session_lines.length > 0) {
-			string sessionCookieLine = session_lines[0];
-			return sessionCookieLine[(indexOf(sessionCookieLine, "=")+1)..indexOf(sessionCookieLine, ";")];
-
-		}
-		else {
-			return null;
-		}
+		return request.SessionID();
 	}
 
-	public string[] GetResponseLines() {
-		response_stream.seek(0);
-		//Read utf not working on a filedata stream, so we read the headers line by line.
-		string line;
-		string[] lines;
-		while(line is null) {
-			line = response_stream.readLine().assumeUTF;
-			lines ~= line;
-			//If we find the content is readable, just read it all and split.
-			if(line.indexOf("UTF-8") != -1) {
-				response_stream.seek(0);
-		 		string rawResponse = response_stream.readAllUTF8();
-		 		rawResponse = rawResponse[0..indexOf(rawResponse, "\0")];
-				return rawResponse.splitLines();
-			}
-			if(line != "") {
-				line = null;
-			}
-		}
-		return lines;
+	public string ResponseContentType() {
+		return response.content_type;
+	}
+
+	public int ResponseCode() {
+		return response.code;
 	}
 }
 
@@ -306,9 +236,11 @@ class Test : TestSuite {
 		auto dummy = new SessionDummyHandler();
 		
 		auto tester = new ActionTester(&dummy.handleRequest, "");
-		assertNotEqual(tester.GetResponseSessionID(), null);
+		
+		assertNotEqual(tester.GetResponseSessionID(), "");
 		string value = tester.GetResponseSessionValue!string("testkey");
 		assertEqual(value, "testvalue");
+		
 	}
 
 	void Subsequent_calls_after_session_value_is_set_should_have_that_session_in_request() {

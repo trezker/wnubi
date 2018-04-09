@@ -226,11 +226,7 @@ class Test : TestSuite {
 		get.SetActionCreator("test", () => new WorldPreview);
 		ActionTester tester = new ActionTester(&get.Perform, "http://test.com/test?" ~ argstring);
 
-		auto responseLines = tester.GetResponseLines();
-//		writeln(responseLines);
-		bool pred(string x) { return x.indexOf("image/png") != -1; }
-		auto content_type = find!(pred)(responseLines);
-		assertGreaterThan(content_type.length, 0);
+		assertEqual(tester.ResponseContentType, "image/png");
 	}
 }
 

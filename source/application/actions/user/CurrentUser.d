@@ -4,6 +4,9 @@ import std.stdio;
 import vibe.http.server;
 import vibe.data.bson;
 
+import application.testhelpers;
+import application.Database;
+import application.Login;
 import boiler.ActionTester;
 import boiler.testsuite;
 import boiler.helpers;
@@ -48,14 +51,24 @@ class CurrentUser: Action {
 	}
 }
 
-//CurrentUser should return the name of logged in user
-unittest {
-	import application.testhelpers;
-	import application.Database;
+class Test : TestSuite {
+	Database database;
 
-	Database database = GetDatabase("test");
-	
-	try {
+	this() {
+		database = GetDatabase("test");
+
+		AddTest(&CurrentUser_should_return_the_name_of_logged_in_user);
+		AddTest(&CurrentUser_should_give_no_name_if_not_logged_in);
+	}
+
+	override void Setup() {
+	}
+
+	override void Teardown() {
+		database.ClearCollection("user");
+	}
+
+	void CurrentUser_should_return_the_name_of_logged_in_user() {
 		string username = "testname";
 		CreateTestUser(username, "testpass");
 		auto tester = TestLogin(username, "testpass");
@@ -67,20 +80,8 @@ unittest {
 		assertEqual(jsonoutput["success"].to!bool, true);
 		assertEqual(jsonoutput["username"].to!string, username);
 	}
-	finally {
-		database.ClearCollection("user");
-	}
-}
 
-//CurrentUser should give no name if not logged in
-unittest {
-	import application.testhelpers;
-	import application.Database;
-	import application.Login;
-
-	Database database = GetDatabase("test");
-	
-	try {
+	void CurrentUser_should_give_no_name_if_not_logged_in() {
 		CurrentUser currentUser = new CurrentUser(new User_storage(database));
 		ActionTester tester = new ActionTester(&currentUser.Perform, "");
 		
@@ -88,7 +89,9 @@ unittest {
 		assertEqual(jsonoutput["success"].to!bool, true);
 		assertEqual(jsonoutput["username"].to!string, "");
 	}
-	finally {
-		database.ClearCollection("user");
-	}
+}
+
+unittest {
+	auto test = new Test;
+	test.Run();
 }

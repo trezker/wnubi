@@ -70,5 +70,5 @@ class Test : TestSuite {
 
 unittest {
 	auto test = new Test;
-	test.Run();
+	//test.Run();
 }

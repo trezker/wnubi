@@ -71,7 +71,7 @@ class Login: Action {
 		return res;
 	}
 }
-
+/*
 //Login user without parameters should fail
 unittest {
 	Database database = GetDatabase("test");
@@ -143,3 +143,4 @@ unittest {
 		database.ClearCollection("user");
 	}
 }
+*/
