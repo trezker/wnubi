@@ -54,9 +54,9 @@ class Test : TestSuite {
 	}
 
 	void Logout_should_succeed_and_session_should_not_contain_a_user_id() {
-		CreateTestUser("testname", "testpass");
+		CreateTestUser(database, "testname", "testpass");
 
-		auto tester = TestLogin("testname", "testpass");
+		auto tester = TestLogin(database, "testname", "testpass");
 
 		Logout logoutHandler = new Logout();
 		tester.Request(&logoutHandler.Perform, "");
@@ -70,5 +70,5 @@ class Test : TestSuite {
 
 unittest {
 	auto test = new Test;
-	//test.Run();
+	test.Run();
 }

@@ -10,9 +10,7 @@ import vibe.data.json;
 import vibe.data.bson;
 
 
-void CreateTestUser(string name, string password) {
-	Database database = GetDatabase("test");
-	
+void CreateTestUser(Database database, string name, string password) {
 	CreateUser m = new CreateUser(new User_storage(database));
 	Json jsoninput = Json.emptyObject;
 	jsoninput["username"] = name;
@@ -23,9 +21,7 @@ void CreateTestUser(string name, string password) {
 	database.Sync();
 }
 
-ActionTester TestLogin(string name, string password) {
-	Database database = GetDatabase("test");
-
+ActionTester TestLogin(Database database, string name, string password) {
 	Login login = new Login(new User_storage(database));
 
 	Json jsoninput = Json.emptyObject;

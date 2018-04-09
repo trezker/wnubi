@@ -70,8 +70,8 @@ class Test : TestSuite {
 
 	void CurrentUser_should_return_the_name_of_logged_in_user() {
 		string username = "testname";
-		CreateTestUser(username, "testpass");
-		auto tester = TestLogin(username, "testpass");
+		CreateTestUser(database, username, "testpass");
+		auto tester = TestLogin(database, username, "testpass");
 
 		CurrentUser currentUser = new CurrentUser(new User_storage(database));
 		tester.Request(&currentUser.Perform, "");

@@ -8,6 +8,7 @@ import vibe.db.mongo.mongo;
 import boiler.HttpRequest;
 import boiler.HttpResponse;
 import boiler.ActionTester;
+import application.testhelpers;
 import boiler.testsuite;
 import boiler.helpers;
 import application.storage.user;
@@ -71,12 +72,28 @@ class Login: Action {
 		return res;
 	}
 }
-/*
-//Login user without parameters should fail
-unittest {
-	Database database = GetDatabase("test");
-	
-	try {
+
+
+class Test : TestSuite {
+	Database database;
+
+	this() {
+		database = GetDatabase("test");
+
+		AddTest(&Login_user_without_parameters_should_fail);
+		AddTest(&Login_user_that_doesnt_exist_should_fail);
+		AddTest(&Login_user_with_correct_parameters_should_succeed_and_set_user_id_in_session);
+		AddTest(&Login_user_with_incorrect_password_should_fail);
+	}
+
+	override void Setup() {
+	}
+
+	override void Teardown() {
+		database.ClearCollection("user");
+	}
+
+	void Login_user_without_parameters_should_fail() {
 		Login m = new Login(new User_storage(database));
 
 		ActionTester tester = new ActionTester(&m.Perform, "");
@@ -84,63 +101,36 @@ unittest {
 		Json jsonoutput = tester.GetResponseJson();
 		assertEqual(jsonoutput["success"].to!bool, false);
 	}
-	finally {
-		database.ClearCollection("user");
-	}
-}
 
-//Login user that doesn't exist should fail
-unittest {
-	Database database = GetDatabase("test");
-	
-	try {
-		auto tester = TestLogin("testname", "testpass");
+	void Login_user_that_doesnt_exist_should_fail() {
+		auto tester = TestLogin(database, "testname", "testpass");
 
 		Json jsonoutput = tester.GetResponseJson();
 		assertEqual(jsonoutput["success"].to!bool, false);
 	}
-	finally {
-		database.ClearCollection("user");
-	}
-}
 
-//Login user with correct parameters should succeed and set user id in session
-unittest {
-	import application.testhelpers;
+	void Login_user_with_correct_parameters_should_succeed_and_set_user_id_in_session() {
+		CreateTestUser(database, "testname", "testpass");
 
-	Database database = GetDatabase("test");
-	
-	try {
-		CreateTestUser("testname", "testpass");
-
-		auto tester = TestLogin("testname", "testpass");
+		auto tester = TestLogin(database, "testname", "testpass");
 
 		Json jsonoutput = tester.GetResponseJson();
 		assertEqual(jsonoutput["success"].to!bool, true);
 		string id = tester.GetResponseSessionValue!string("id");
 		assertNotEqual(id, "");
 	}
-	finally {
-		database.ClearCollection("user");
-	}
-}
 
-//Login user with incorrect password should fail
-unittest {
-	import application.testhelpers;
+	void Login_user_with_incorrect_password_should_fail() {
+		CreateTestUser(database, "testname", "testpass");
 
-	Database database = GetDatabase("test");
-	
-	try {
-		CreateTestUser("testname", "testpass");
-
-		auto tester = TestLogin("testname", "wrong");
+		auto tester = TestLogin(database, "testname", "wrong");
 
 		Json jsonoutput = tester.GetResponseJson();
 		assertEqual(jsonoutput["success"].to!bool, false);
 	}
-	finally {
-		database.ClearCollection("user");
-	}
 }
-*/
+
+unittest {
+	auto test = new Test;
+	test.Run();
+}
