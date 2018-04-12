@@ -16,12 +16,14 @@ import application.storage.user;
 
 struct NewCharacter {
 	BsonObjectID userId;
+	BsonObjectID worldId;
 	Coordinates coordinates;
 }
 
 struct Character {
 	BsonObjectID _id;
 	BsonObjectID userId;
+	BsonObjectID worldId;
 	Coordinates coordinates;
 }
 

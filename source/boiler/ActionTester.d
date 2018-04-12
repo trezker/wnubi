@@ -31,7 +31,7 @@ class ActionTester {
 
 	this(Request_delegate handler, string input, string url) {
 		sessionstore = new MemorySessionStore ();
-		Request(handler, url, input);
+		Request(handler, input, url);
 	}
 
 	public void Request(Request_delegate handler, string url) {
@@ -47,7 +47,7 @@ class ActionTester {
 	}
 
 	public void Request(Request_delegate handler, string input, string url) {
-		PrepareJsonRequest(url, input);
+		PrepareJsonRequest(input, url);
 		CallHandler(handler);
 	}
 

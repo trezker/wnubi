@@ -12,6 +12,7 @@ import boiler.HttpResponse;
 import application.Database;
 import application.storage.character;
 import application.storage.world;
+import application.testhelpers;
 
 class CreateCharacter: Action {
 	Character_storage character_storage;
@@ -22,20 +23,26 @@ class CreateCharacter: Action {
 		this.world_storage = world_storage;
 	}
 
-	bool HasAccess(HttpRequest req) {
+	bool HasAccess(HttpRequest request) {
 		return true;
 	}
 
-	HttpResponse Perform(HttpRequest req) {
+	HttpResponse Perform(HttpRequest request) {
 		HttpResponse res = new HttpResponse;
 		try {
-			string worldId = req.json["worldId"].to!string;
+			if(!request.session) {
+				throw(new Exception("Not logged in"));
+			}
+			string id = request.session.get!string("id");
+			string worldId = request.json["worldId"].to!string;
 
 			World world = world_storage.ById(worldId);
 
 			auto latitude = world.spawnpoints[0].coordinates.latitude;
 			auto longitude = world.spawnpoints[0].coordinates.longitude;
 			NewCharacter character = {
+				userId: BsonObjectID.fromString(id),
+				worldId: BsonObjectID.fromString(worldId),
 				coordinates: {latitude, longitude}
 			};
 			character_storage.Create(character);
@@ -111,7 +118,11 @@ class Test : TestSuite {
 		Json jsoninput = Json.emptyObject;
 		jsoninput["worldId"] = obj[0]._id.toString();
 
-		ActionTester tester = new ActionTester(&m.Perform, serializeToJsonString(jsoninput), "");
+		string username = "testname";
+		CreateTestUser(database, username, "testpass");
+		auto tester = TestLogin(database, username, "testpass");
+
+		tester.Request(&m.Perform, serializeToJsonString(jsoninput), "");
 
 		Json jsonoutput = tester.GetResponseJson();
 		assertEqual(jsonoutput["success"].to!bool, true);
