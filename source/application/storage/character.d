@@ -70,7 +70,7 @@ class Test : TestSuite {
 		user_storage = new User_storage(database);
 		
 		AddTest(&Create_character);
-		AddTest(&Find_character_by_user);
+		AddTest(&Find_characters_by_user);
 	}
 
 	override void Setup() {
@@ -90,7 +90,7 @@ class Test : TestSuite {
 		assertNotThrown(character_storage.Create(character));
 	}
 
-	void Find_character_by_user() {
+	void Find_characters_by_user() {
 		auto userId = "000000000000000000000000";
 		NewCharacter character = {
 			userId: BsonObjectID.fromString(userId),
